@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  --color-bg-primary: #131517;         /* Fondo principal (primario) */
+  --color-bg-secondary: #1A1C20;       /* Fondo secundario */
+  --color-surface: #2D2F33;            /* Elemento seleccionable */
+  --color-surface-hover: #3F4148;      /* Hover del elemento seleccionable */
+  
+  --color-action: #BB368C;             /* Botón de acción */
+  --color-action-hover: #F23AB1;       /* Hover del botón de acción */
+}
+
+
 body {
   font-family: var(--font-poppins), "Helvetica", "Arial", sans-serif;
+  background-color: #131517;
 }
