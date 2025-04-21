@@ -1,5 +1,3 @@
-"use client";
-
 import { supabase } from "@/utils/supabase";
 
 function SignInAuthButton() {
@@ -10,9 +8,10 @@ function SignInAuthButton() {
   return (
     <button
       onClick={handleSignIn}
-      className="border border-gray-600 p-3 cursor-pointer"
+      type="button"
+      className="inline-flex items-center px-5 py-2 mb-2 text-sm font-medium text-center text-white rounded-lg bg-action hover:bg-action-hover focus:ring-4 focus:outline-none focus:ring-action-hover me-2"
     >
-      Sign In
+      Comenzar
     </button>
   );
 }
