@@ -8,7 +8,7 @@ function Hero() {
   const user = useAuthListener();
 
   return (
-    <section className="h-[calc(100vh-64px)] flex flex-col justify-center items-center px-10 mx-auto lg:container lg:px-16 xl:px-40">
+    <section className="h-[calc(100vh-65px)] flex flex-col justify-center items-center px-10 mx-auto lg:container lg:px-32 xl:px-40">
       <h1 className="flex flex-col items-center justify-center text-4xl text-center text-white sm:text-5xl sm:leading-none lg:text-7xl">
         <span className="block">Gestiona sin esfuerzo</span>
         <span className="block text-action">Colabora fácilmente</span>
