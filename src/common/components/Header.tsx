@@ -38,23 +38,23 @@ function Header() {
           aria-label="Main navigation"
         >
           {user && (
-            <ul className="flex flex-col gap-5 sm:gap-8 sm:flex-row">
+            <ul className="flex flex-col gap-5 sm:items-center sm:gap-8 sm:flex-row">
               <li>
                 <Link
-                  href="#"
-                  className="text-sm font-semibold text-white hover:text-action-hover"
+                  href="/projects"
+                  className="text-xs font-semibold text-white hover:text-action-hover md:text-sm"
                 >
-                  Tableros
+                  Mis proyectos
                 </Link>
               </li>
               <li>
                 <button
                   type="button"
-                  className="flex items-center cursor-pointer group"
+                  className="flex justify-center cursor-pointer group"
                   aria-label="Crear tablero"
                 >
-                  <span className="mr-2 text-sm font-semibold text-white group-hover:text-action">
-                    Crear tablero
+                  <span className="mr-2 text-xs font-semibold text-white group-hover:text-action md:text-sm">
+                    Crear proyecto
                   </span>
                   <PlusIcon className="text-white size-3 group-hover:text-action" />
                 </button>
