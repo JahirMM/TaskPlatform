@@ -1,14 +1,18 @@
 import { RecentlyViewedProjectInterface } from "@/projects/interfaces/recentlyViewedProjectInterface";
+import { getUser } from "@/common/services/getUser";
 import { supabase } from "@/utils/supabase";
 
 export const getRecentlyViewedProjects = async (): Promise<
   RecentlyViewedProjectInterface[]
 > => {
+  const user = await getUser();
+
   const { data, error } = await supabase
     .from("recently_viewed_projects")
     .select(
       "id, project_id, last_viewed_at, projects(name, description, created_at)"
     )
+    .eq("user_id", user.id)
     .order("last_viewed_at", { ascending: false });
 
   if (error) throw new Error(error.message);

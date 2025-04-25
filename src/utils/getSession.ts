@@ -1,7 +1,7 @@
 import { supabase } from "./supabase";
 
-const getSession = () => {
-  return supabase.auth
+const getSession = async () => {
+  return await supabase.auth
     .getSession()
     .then(({ data: { session } }) => session)
     .catch((error) => {
