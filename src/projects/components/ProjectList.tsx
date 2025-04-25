@@ -1,7 +1,15 @@
+"use client";
+
 import CreateProjectButton from "@/projects/components/CreateProjectButton";
 import ProjectItem from "@/projects/components/ProjectItem";
 
+import { useGetProjects } from "@/projects/hooks/useGetProjects";
+
 function ProjectList() {
+  const { projects, error, loading } = useGetProjects();
+
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <section aria-labelledby="workspaces">
       <header className="flex flex-col justify-between gap-8 mb-8 sm:flex-row sm:items-center sm:gap-0">
@@ -20,9 +28,18 @@ function ProjectList() {
       </header>
       <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
         <CreateProjectButton />
-        {[...Array(6)].map((_, i) => (
-          <ProjectItem />
-        ))}
+        {loading ? (
+          <div>cargando</div>
+        ) : (
+          projects.map(({ id, name, created_at }) => (
+            <ProjectItem
+              key={id}
+              id={id}
+              name={name}
+              created_at={created_at}
+            />
+          ))
+        )}
       </div>
     </section>
   );
