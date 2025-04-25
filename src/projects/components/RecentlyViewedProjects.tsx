@@ -1,6 +1,15 @@
+"use client";
+
+import { useRecentlyViewedProjects } from "@/projects/hooks/useRecentlyViewedProjects";
+import ProjectItem from "@/projects/components/ProjectItem";
 import ClockIcon from "@/icons/ClockIcon";
 
 function RecentlyViewedProjects() {
+  const { projects, loading, error } = useRecentlyViewedProjects();
+
+  if (error) return <p>Error: {error}</p>;
+  if (projects.length === 0) return null;
+
   return (
     <section aria-labelledby="recently-viewed" className="mt-8 mb-24 sm:mt-16">
       <header className="flex items-center gap-4 mb-8">
@@ -13,9 +22,18 @@ function RecentlyViewedProjects() {
         </h2>
       </header>
       <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
-        {[...Array(3)].map((_, i) => (
-          <article key={i}>proyecto</article>
-        ))}
+        {loading ? (
+          <div>cargando</div>
+        ) : (
+          projects.map(({ id, project_id, project }) => (
+            <ProjectItem
+              key={id}
+              id={project_id}
+              name={project.name}
+              created_at={project.created_at}
+            />
+          ))
+        )}
       </div>
     </section>
   );
