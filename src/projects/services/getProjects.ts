@@ -1,8 +1,13 @@
 import { ProjectInterface } from "@/projects/interfaces/projectInterface";
+import { getUser } from "@/common/services/getUser";
 import { supabase } from "@/utils/supabase";
 
 export const getProjects = async (): Promise<ProjectInterface[]> => {
-  const { data, error } = await supabase.from("projects").select("*");
+  const user = await getUser();
+  const { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("owner_id", user.id);
   if (error) throw new Error(error.message);
   if (!data) return [];
 
