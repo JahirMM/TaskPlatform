@@ -1,11 +1,41 @@
-function CreateProjectButton() {
+import { createProject } from "@/projects/services/createProject";
+import { useState } from "react";
+
+interface CreateProjectButtonProps {
+  projectNameRef: React.RefObject<string>;
+  projectDescriptionRef: React.RefObject<string>;
+  fetchProjects: () => Promise<void>;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function CreateProjectButton({
+  projectNameRef,
+  projectDescriptionRef,
+  fetchProjects,
+  setShowForm,
+}: CreateProjectButtonProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const addProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const projectName = projectNameRef.current || "";
+    const projectDescription = projectDescriptionRef.current || "";
+
+    await createProject({ name: projectName, description: projectDescription });
+    await fetchProjects();
+    setShowForm(false);
+    setIsLoading(false);
+  };
+
   return (
     <button
       type="button"
-      className="w-full bg-action h-44 rounded-xl flex items-center justify-center p-3 cursor-pointer hover:bg-action-hover sm:w-80 xl:max-w-[368px]"
-      aria-label="Crear un proyecto nuevo"
+      onClick={addProject}
+      className="px-3 py-2 text-sm font-semibold text-white uppercase rounded-lg cursor-pointer bg-action hover:bg-action-hover"
     >
-      <span className="text-sm font-bold text-gray-200">Crear un proyecto</span>
+      {isLoading ? "Creando..." : "Crear"}
     </button>
   );
 }
