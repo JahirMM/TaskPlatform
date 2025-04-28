@@ -48,6 +48,7 @@ function ProjectList() {
                 id={id}
                 name={name}
                 created_at={created_at}
+                fetchProjects={fetchProjects}
               />
             ))
           )}
