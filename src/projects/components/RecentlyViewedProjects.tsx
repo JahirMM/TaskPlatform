@@ -1,7 +1,7 @@
 "use client";
 
 import { useRecentlyViewedProjects } from "@/projects/hooks/useRecentlyViewedProjects";
-import ProjectItem from "@/projects/components/ProjectItem";
+// import ProjectItem from "@/projects/components/ProjectItem";
 import ClockIcon from "@/icons/ClockIcon";
 
 function RecentlyViewedProjects() {
@@ -23,16 +23,17 @@ function RecentlyViewedProjects() {
       </header>
       <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
         {loading ? (
-          <div>cargando</div>
+          <div>cargando..</div>
         ) : (
-          projects.map(({ id, project_id, project }) => (
-            <ProjectItem
-              key={id}
-              id={project_id}
-              name={project.name}
-              created_at={project.created_at}
-            />
-          ))
+          // projects.map(({ id, project_id, project }) => (
+          //   <ProjectItem
+          //     key={id}
+          //     id={project_id}
+          //     name={project.name}
+          //     created_at={project.created_at}
+          //   />
+          // ))
+          <div>projects</div>
         )}
       </div>
     </section>

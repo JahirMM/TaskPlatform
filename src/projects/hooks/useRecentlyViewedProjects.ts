@@ -10,20 +10,20 @@ export const useRecentlyViewedProjects = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const data = await getRecentlyViewedProjects();
-        setProjects(data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchProjects = async () => {
+    try {
+      const data = await getRecentlyViewedProjects();
+      setProjects(data);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [fetchProjects]);
 
   return { projects, loading, error };
 };

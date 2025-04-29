@@ -2,6 +2,7 @@
 
 import OpenCreateProjectModalButton from "@/projects/components/OpenCreateProjectModalButton";
 import CreateProjectForm from "@/projects/components/CreateProjectForm";
+import FilterProjects from "@/projects/components/FilterProjects";
 import ProjectItem from "@/projects/components/ProjectItem";
 import Modal from "@/common/components/Modal";
 
@@ -12,9 +13,13 @@ import { useEffect, useState } from "react";
 
 function ProjectList() {
   const { projects, error, loading, fetchProjects } = useGetProjects();
+  const [showForm, setShowform] = useState(false);
   const [userId, setUserId] = useState("");
 
-  const [showForm, setShowform] = useState(false);
+  const [filterType, setFilterType] = useState<"all" | "owned" | "invited">(
+    "all"
+  );
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleCloseForm = () => {
     setShowform((showForm) => !showForm);
@@ -29,23 +34,40 @@ function ProjectList() {
     fetchUser();
   }, []);
 
+  const filteredProjects = projects.filter((project) => {
+    const matchesSearch = project.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    const isOwned = project.owner_id === userId;
+    const isInvited = project.owner_id !== userId;
+
+    const matchesType =
+      filterType === "all" ||
+      (filterType === "owned" && isOwned) ||
+      (filterType === "invited" && isInvited);
+
+    return matchesSearch && matchesType;
+  });
+
   return (
     <>
       <section aria-labelledby="workspaces" className="mt-20">
-        <header className="flex flex-col justify-between gap-8 mb-8 sm:flex-row sm:items-center sm:gap-0">
+        <header className="flex flex-col justify-between gap-4 mb-8 sm:flex-row sm:items-center sm:gap-10">
           <h2
             id="workspaces"
-            className="text-lg font-semibold text-white sm:text-xl"
+            className="text-lg font-semibold text-white whitespace-nowrap md:text-xl"
           >
             Tus espacios de trabajo
           </h2>
-          <input
-            type="search"
-            placeholder="Buscar proyecto"
-            className="px-3 py-2 text-sm text-white border border-action rounded-xl focus:border-action-hover focus:outline focus:outline-action-hover sm:w-72 lg:w-96"
-            aria-label="Buscar proyecto"
+          <FilterProjects
+            filterType={filterType}
+            searchTerm={searchTerm}
+            setFilterType={setFilterType}
+            setSearchTerm={setSearchTerm}
           />
         </header>
+
         {error ? (
           <p className="text-red-500">Error: {error}</p>
         ) : (
@@ -53,8 +75,10 @@ function ProjectList() {
             <OpenCreateProjectModalButton setShowForm={handleCloseForm} />
             {loading ? (
               <div>cargando</div>
+            ) : filteredProjects.length === 0 ? (
+              <p className="text-white">No se encontraron proyectos</p>
             ) : (
-              projects.map(({ id, owner_id, name, created_at }) => (
+              filteredProjects.map(({ id, owner_id, name, created_at }) => (
                 <ProjectItem
                   key={id}
                   id={id}
@@ -68,25 +92,8 @@ function ProjectList() {
             )}
           </div>
         )}
-        {/* <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
-          <OpenCreateProjectModalButton setShowForm={handleCloseForm} />
-          {loading ? (
-            <div>cargando</div>
-          ) : (
-            projects.map(({ id, owner_id, name, created_at }) => (
-              <ProjectItem
-                key={id}
-                id={id}
-                user_id={userId}
-                owner_id={owner_id}
-                name={name}
-                created_at={created_at}
-                fetchProjects={fetchProjects}
-              />
-            ))
-          )}
-        </div> */}
       </section>
+
       {showForm && (
         <Modal title="Crear proyecto" onClose={handleCloseForm}>
           <CreateProjectForm
