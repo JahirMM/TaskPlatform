@@ -7,10 +7,13 @@ import ProjectItem from "@/projects/components/ProjectItem";
 import Modal from "@/auth/components/Modal";
 
 import { useGetProjects } from "@/projects/hooks/useGetProjects";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getUser } from "@/common/services/getUser";
+import { UserInterface } from "@/common/interfaces/userInterface";
 
 function ProjectList() {
   const { projects, error, loading, fetchProjects } = useGetProjects();
+  const [userId, setUserId] = useState("");
 
   const [showForm, setShowform] = useState(false);
 
@@ -19,6 +22,18 @@ function ProjectList() {
   const handleCloseForm = () => {
     setShowform((showForm) => !showForm);
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await getUser();
+      setUserId(userData.id);
+    };
+
+    fetchUser();
+  }, []);
+
+  console.log(projects);
+  
 
   return (
     <>
@@ -42,10 +57,12 @@ function ProjectList() {
           {loading ? (
             <div>cargando</div>
           ) : (
-            projects.map(({ id, name, created_at }) => (
+            projects.map(({ id, owner_id, name, created_at }) => (
               <ProjectItem
                 key={id}
                 id={id}
+                user_id={userId}
+                owner_id={owner_id}
                 name={name}
                 created_at={created_at}
                 fetchProjects={fetchProjects}
