@@ -1,16 +1,17 @@
 import { createProject } from "@/projects/services/createProject";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface CreateProjectButtonProps {
-  projectNameRef: React.RefObject<string>;
-  projectDescriptionRef: React.RefObject<string>;
+  projectName: string;
+  projectDescription: string;
   fetchProjects: () => Promise<void>;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function CreateProjectButton({
-  projectNameRef,
-  projectDescriptionRef,
+  projectName,
+  projectDescription,
   fetchProjects,
   setShowForm,
 }: CreateProjectButtonProps) {
@@ -20,11 +21,14 @@ function CreateProjectButton({
     e.preventDefault();
     setIsLoading(true);
 
-    const projectName = projectNameRef.current || "";
-    const projectDescription = projectDescriptionRef.current || "";
+    if (!projectName || !projectDescription) {
+      toast.error("Por favor llenar todos los campos");
+      return;
+    }
 
     await createProject({ name: projectName, description: projectDescription });
     await fetchProjects();
+
     setShowForm(false);
     setIsLoading(false);
   };

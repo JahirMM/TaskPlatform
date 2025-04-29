@@ -3,13 +3,12 @@
 import OpenCreateProjectModalButton from "@/projects/components/OpenCreateProjectModalButton";
 import CreateProjectForm from "@/projects/components/CreateProjectForm";
 import ProjectItem from "@/projects/components/ProjectItem";
-
-import Modal from "@/auth/components/Modal";
+import Modal from "@/common/components/Modal";
 
 import { useGetProjects } from "@/projects/hooks/useGetProjects";
-import { useEffect, useState } from "react";
 import { getUser } from "@/common/services/getUser";
-import { UserInterface } from "@/common/interfaces/userInterface";
+
+import { useEffect, useState } from "react";
 
 function ProjectList() {
   const { projects, error, loading, fetchProjects } = useGetProjects();
@@ -31,9 +30,6 @@ function ProjectList() {
 
     fetchUser();
   }, []);
-
-  console.log(projects);
-  
 
   return (
     <>

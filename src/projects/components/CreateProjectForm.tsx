@@ -1,5 +1,5 @@
 import CreateProjectButton from "@/projects/components/CreateProjectButton";
-import { useRef } from "react";
+import { useState } from "react";
 
 interface CreateProjectFormProps {
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -10,16 +10,21 @@ function CreateProjectForm({
   setShowForm,
   fetchProjects,
 }: CreateProjectFormProps) {
-  const refName = useRef<string>("");
-  const refDescription = useRef<string>("");
+  const [nameValue, setNameValue] = useState("");
+  const [descriptionValue, setDescriptionValue] = useState("");
 
   const handleRefName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    refName.current = e.target.value;
+    const value = e.target.value;
+    if (value.length <= 5) {
+      setNameValue(value);
+    }
   };
 
   const handleRefDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    refDescription.current = e.target.value;
+    const value = e.target.value;
+    if (value.length <= 400) {
+      setDescriptionValue(value);
+    }
   };
 
   return (
@@ -36,6 +41,7 @@ function CreateProjectForm({
             id="project-name"
             name="projectName"
             type="text"
+            value={nameValue}
             placeholder="nombre del proyecto"
             onChange={handleRefName}
             className="px-3 py-2 text-sm text-white border rounded-lg border-action focus:border-action-hover focus:outline focus:outline-action-hover"
@@ -50,6 +56,7 @@ function CreateProjectForm({
           <textarea
             id="project-description"
             name="projectDescription"
+            value={descriptionValue}
             placeholder="descripción del proyecto"
             onChange={handleRefDescription}
             className="px-3 py-2 text-sm text-white border rounded-lg resize-none h-52 border-action focus:border-action-hover focus:outline focus:outline-action-hover"
@@ -58,8 +65,8 @@ function CreateProjectForm({
         </div>
 
         <CreateProjectButton
-          projectNameRef={refName}
-          projectDescriptionRef={refDescription}
+          projectName={nameValue}
+          projectDescription={descriptionValue}
           fetchProjects={fetchProjects}
           setShowForm={setShowForm}
         />

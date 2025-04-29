@@ -1,6 +1,7 @@
 import Header from "@/common/components/Header";
 import { Poppins } from "next/font/google";
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <Header />
         <main>{children}</main>
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );
