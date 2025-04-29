@@ -1,6 +1,6 @@
 import { UserInterface } from "@/common/interfaces/userInterface";
-import { supabase } from "@/utils/supabase";
-import getSession from "@/utils/getSession";
+import { supabase } from "@/common/utils/supabase";
+import getSession from "@/common/utils/getSession";
 
 export const getUser = async (): Promise<UserInterface> => {
   const session = await getSession();

@@ -1,32 +1,31 @@
 import { ProjectInterface } from "@/projects/interfaces/projectInterface";
 import { getUser } from "@/common/services/getUser";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/common/utils/supabase";
 
 export const getProjects = async (): Promise<ProjectInterface[]> => {
   const user = await getUser();
 
-  const { data: ownedProjects, error: ownedError } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("owner_id", user.id);
+  const [ownedRes, invitedRes] = await Promise.all([
+    supabase
+      .from("projects")
+      .select("*")
+      .eq("owner_id", user.id)
+      .order("created_at", { ascending: false }),
 
-  if (ownedError) throw new Error(ownedError.message);
+    supabase
+      .from("project_members")
+      .select("project:projects(*)")
+      .eq("user_id", user.id),
+  ]);
 
-  const { data: invitedProjects, error: invitedError } = await supabase
-    .from("project_members")
-    .select(
-      `
-      project:projects(*)
-    `
-    )
-    .eq("user_id", user.id);
+  if (ownedRes.error) throw new Error(ownedRes.error.message);
+  if (invitedRes.error) throw new Error(invitedRes.error.message);
 
-  if (invitedError) throw new Error(invitedError.message);
+  const ownedProjects = ownedRes.data ?? [];
+  const invitedProjects = invitedRes.data?.map((inv) => inv.project) ?? [];
 
-  const projectsFromInvitations =
-    invitedProjects?.map((inv) => inv.project) || [];
-
-  const allProjects = [...(ownedProjects || []), ...projectsFromInvitations];
-
-  return allProjects;
+  return [...ownedProjects, ...invitedProjects].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 };

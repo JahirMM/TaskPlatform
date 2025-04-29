@@ -1,4 +1,4 @@
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/common/utils/supabase";
 
 function SignInAuthButton() {
   const handleSignIn = async () => {

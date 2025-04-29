@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 
 import { User } from "@supabase/supabase-js";
 
-import { supabase } from "@/utils/supabase";
-import getSession from "@/utils/getSession";
+import { supabase } from "@/common/utils/supabase";
+import getSession from "@/common/utils/getSession";
 
 export default function useAuthListener() {
   const [user, setUser] = useState<User | null>(null);

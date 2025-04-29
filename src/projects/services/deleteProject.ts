@@ -1,4 +1,4 @@
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/common/utils/supabase";
 
 export const deleteProjectService = async (
   project_id: string,

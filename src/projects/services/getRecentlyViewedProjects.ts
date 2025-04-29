@@ -1,6 +1,6 @@
 import { RecentlyViewedProjectInterface } from "@/projects/interfaces/recentlyViewedProjectInterface";
 import { getUser } from "@/common/services/getUser";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/common/utils/supabase";
 
 export const getRecentlyViewedProjects = async (): Promise<
   RecentlyViewedProjectInterface[]

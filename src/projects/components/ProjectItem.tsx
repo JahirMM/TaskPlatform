@@ -1,4 +1,5 @@
 import { useDeleteProject } from "@/projects/hooks/useDeleteProject";
+import { formatDate } from "@/common/utils/formatDate";
 import TrashIcon from "@/icons/TrashIcon";
 import { toast } from "sonner";
 
@@ -49,7 +50,7 @@ function ProjectItem({
           ))}
       </div>
       <time className="text-xs text-[#A1A1AA]" dateTime="2025-04-30">
-        {created_at}
+        {formatDate(created_at)}
       </time>
     </article>
   );

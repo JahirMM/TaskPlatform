@@ -1,5 +1,5 @@
 import { getUser } from "@/common/services/getUser";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/common/utils/supabase";
 
 interface ProjectRequestInterface {
   name: string;

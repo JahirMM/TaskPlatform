@@ -16,8 +16,6 @@ function ProjectList() {
 
   const [showForm, setShowform] = useState(false);
 
-  if (error) return <p>Error: {error}</p>;
-
   const handleCloseForm = () => {
     setShowform((showForm) => !showForm);
   };
@@ -48,7 +46,29 @@ function ProjectList() {
             aria-label="Buscar proyecto"
           />
         </header>
-        <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
+        {error ? (
+          <p className="text-red-500">Error: {error}</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
+            <OpenCreateProjectModalButton setShowForm={handleCloseForm} />
+            {loading ? (
+              <div>cargando</div>
+            ) : (
+              projects.map(({ id, owner_id, name, created_at }) => (
+                <ProjectItem
+                  key={id}
+                  id={id}
+                  user_id={userId}
+                  owner_id={owner_id}
+                  name={name}
+                  created_at={created_at}
+                  fetchProjects={fetchProjects}
+                />
+              ))
+            )}
+          </div>
+        )}
+        {/* <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
           <OpenCreateProjectModalButton setShowForm={handleCloseForm} />
           {loading ? (
             <div>cargando</div>
@@ -65,7 +85,7 @@ function ProjectList() {
               />
             ))
           )}
-        </div>
+        </div> */}
       </section>
       {showForm && (
         <Modal title="Crear proyecto" onClose={handleCloseForm}>

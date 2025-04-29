@@ -15,7 +15,7 @@ function CreateProjectForm({
 
   const handleRefName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (value.length <= 5) {
+    if (value.length <= 70) {
       setNameValue(value);
     }
   };
