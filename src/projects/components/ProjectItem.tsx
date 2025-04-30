@@ -1,5 +1,8 @@
+import { useCreateRecentlyViewedProject } from "@/projects/hooks/useCreateRecentlyViewedProject";
 import { useDeleteProject } from "@/projects/hooks/useDeleteProject";
+
 import { formatDate } from "@/common/utils/formatDate";
+
 import TrashIcon from "@/icons/TrashIcon";
 import { toast } from "sonner";
 
@@ -21,8 +24,11 @@ function ProjectItem({
   fetchProjects,
 }: ProjectItemProps) {
   const { deleteProject, loading, error } = useDeleteProject();
+  const { createRecentlyViewedProject } = useCreateRecentlyViewedProject();
 
-  const handleDelete = async () => {
+  const handleDelete = async (event: React.MouseEvent) => {
+    event.stopPropagation();
+
     if (error) {
       toast.error("Error al eliminar el porject");
     }
@@ -31,8 +37,15 @@ function ProjectItem({
     await fetchProjects();
   };
 
+  const handleProjectItem = async () => {
+    await createRecentlyViewedProject(id, user_id);
+  };
+
   return (
-    <article className="overflow-hidden w-full bg-surface h-44 rounded-xl flex flex-col justify-between p-3 cursor-pointer group hover:bg-surface-hover sm:w-80 xl:max-w-[368px]">
+    <article
+      className="overflow-hidden w-full bg-surface h-44 rounded-xl flex flex-col justify-between p-3 cursor-pointer group hover:bg-surface-hover sm:w-80 xl:max-w-[368px]"
+      onClick={handleProjectItem}
+    >
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-sm font-bold text-gray-200 line-clamp-2">{name}</h3>
 
@@ -42,7 +55,7 @@ function ProjectItem({
           ) : (
             <button
               type="button"
-              onClick={handleDelete}
+              onClick={(event) => handleDelete(event)}
               className="p-2 transition-transform translate-x-10 rounded-md cursor-pointer group-hover:translate-0 hover:bg-action-hover/20"
             >
               <TrashIcon className="size-4 text-action" />
