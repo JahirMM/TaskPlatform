@@ -1,11 +1,12 @@
 "use client";
 
 import { useRecentlyViewedProjects } from "@/projects/hooks/useRecentlyViewedProjects";
-// import ProjectItem from "@/projects/components/ProjectItem";
+import ProjectItem from "@/projects/components/ProjectItem";
 import ClockIcon from "@/icons/ClockIcon";
 
-function RecentlyViewedProjects() {
-  const { projects, loading, error } = useRecentlyViewedProjects();
+function RecentlyViewedProjects({ user_id }: { user_id: string }) {
+  const { projects, loading, error, fetchRecentlyViewedProjects } =
+    useRecentlyViewedProjects(true);
 
   if (error) return <p>Error: {error}</p>;
   if (projects.length === 0) return null;
@@ -25,15 +26,17 @@ function RecentlyViewedProjects() {
         {loading ? (
           <div>cargando..</div>
         ) : (
-          // projects.map(({ id, project_id, project }) => (
-          //   <ProjectItem
-          //     key={id}
-          //     id={project_id}
-          //     name={project.name}
-          //     created_at={project.created_at}
-          //   />
-          // ))
-          <div>projects</div>
+          projects.map(({ id, project_id, project }) => (
+            <ProjectItem
+              key={id}
+              id={project_id}
+              user_id={user_id}
+              owner_id={project.owner_id}
+              name={project.name}
+              created_at={project.created_at}
+              fetchRecentlyViewedProjects={fetchRecentlyViewedProjects}
+            />
+          ))
         )}
       </div>
     </section>

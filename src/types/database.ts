@@ -142,7 +142,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      upsert_recently_viewed_project: {
+        Args: { p_user_id: string; p_project_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

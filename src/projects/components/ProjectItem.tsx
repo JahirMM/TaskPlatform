@@ -12,7 +12,8 @@ interface ProjectItemProps {
   owner_id: string;
   name: string;
   created_at: string;
-  fetchProjects: () => Promise<void>;
+  fetchProjects?: () => Promise<void>;
+  fetchRecentlyViewedProjects?: () => Promise<void>;
 }
 
 function ProjectItem({
@@ -22,6 +23,7 @@ function ProjectItem({
   name,
   created_at,
   fetchProjects,
+  fetchRecentlyViewedProjects,
 }: ProjectItemProps) {
   const { deleteProject, loading, error } = useDeleteProject();
   const { createRecentlyViewedProject } = useCreateRecentlyViewedProject();
@@ -34,11 +36,18 @@ function ProjectItem({
     }
 
     await deleteProject(id);
-    await fetchProjects();
+
+    if (typeof fetchProjects === "function") {
+      await fetchProjects();
+    }
   };
 
   const handleProjectItem = async () => {
     await createRecentlyViewedProject(id, user_id);
+
+    if (typeof fetchRecentlyViewedProjects === "function") {
+      await fetchRecentlyViewedProjects();
+    }
   };
 
   return (

@@ -10,7 +10,7 @@ export const getRecentlyViewedProjects = async (): Promise<
   const { data, error } = await supabase
     .from("recently_viewed_projects")
     .select(
-      "id, project_id, last_viewed_at, projects(name, description, created_at)"
+      "id, project_id, last_viewed_at, projects(owner_id, name, description, created_at)"
     )
     .eq("user_id", user.id)
     .order("last_viewed_at", { ascending: false });
@@ -23,6 +23,7 @@ export const getRecentlyViewedProjects = async (): Promise<
     project_id: item.project_id,
     last_viewed_at: item.last_viewed_at,
     project: {
+      owner_id: item.projects.owner_id,
       name: item.projects.name,
       description: item.projects.description,
       created_at: item.projects.created_at,

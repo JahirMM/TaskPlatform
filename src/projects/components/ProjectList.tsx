@@ -6,15 +6,15 @@ import FilterProjects from "@/projects/components/FilterProjects";
 import ProjectItem from "@/projects/components/ProjectItem";
 import Modal from "@/common/components/Modal";
 
+import { useRecentlyViewedProjects } from "@/projects/hooks/useRecentlyViewedProjects";
 import { useGetProjects } from "@/projects/hooks/useGetProjects";
-import { getUser } from "@/common/services/getUser";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-function ProjectList() {
+function ProjectList({ user_id }: { user_id: string }) {
+  const { fetchRecentlyViewedProjects } = useRecentlyViewedProjects(false);
   const { projects, error, loading, fetchProjects } = useGetProjects();
   const [showForm, setShowform] = useState(false);
-  const [userId, setUserId] = useState("");
 
   const [filterType, setFilterType] = useState<"all" | "owned" | "invited">(
     "all"
@@ -25,22 +25,13 @@ function ProjectList() {
     setShowform((showForm) => !showForm);
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getUser();
-      setUserId(userData.id);
-    };
-
-    fetchUser();
-  }, []);
-
   const filteredProjects = projects.filter((project) => {
     const matchesSearch = project.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
-    const isOwned = project.owner_id === userId;
-    const isInvited = project.owner_id !== userId;
+    const isOwned = project.owner_id === user_id;
+    const isInvited = project.owner_id !== user_id;
 
     const matchesType =
       filterType === "all" ||
@@ -82,11 +73,12 @@ function ProjectList() {
                 <ProjectItem
                   key={id}
                   id={id}
-                  user_id={userId}
+                  user_id={user_id}
                   owner_id={owner_id}
                   name={name}
                   created_at={created_at}
                   fetchProjects={fetchProjects}
+                  fetchRecentlyViewedProjects={fetchRecentlyViewedProjects}
                 />
               ))
             )}

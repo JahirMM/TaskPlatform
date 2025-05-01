@@ -1,17 +1,18 @@
 import { RecentlyViewedProjectInterface } from "@/projects/interfaces/recentlyViewedProjectInterface";
 import { getRecentlyViewedProjects } from "@/projects/services/getRecentlyViewedProjects";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-export const useRecentlyViewedProjects = () => {
+export const useRecentlyViewedProjects = (autoFetch = true) => {
   const [projects, setProjects] = useState<RecentlyViewedProjectInterface[]>(
     []
   );
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(autoFetch);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProjects = async () => {
+  const fetchRecentlyViewedProjects = useCallback(async () => {
     try {
+      setLoading(true);
       const data = await getRecentlyViewedProjects();
       setProjects(data);
     } catch (err) {
@@ -19,11 +20,13 @@ export const useRecentlyViewedProjects = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+    if (autoFetch) {
+      fetchRecentlyViewedProjects();
+    }
+  }, [autoFetch, fetchRecentlyViewedProjects]);
 
-  return { projects, loading, error };
+  return { projects, loading, error, fetchRecentlyViewedProjects };
 };
