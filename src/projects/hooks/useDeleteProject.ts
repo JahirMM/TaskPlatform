@@ -1,29 +1,60 @@
-import { deleteProjectService } from "@/projects/services/deleteProject";
-import { getUser } from "@/common/services/getUser";
-import { useState } from "react";
+// import { deleteProjectService } from "@/projects/services/deleteProjectService";
+// import { useMutation, useQueryClient } from "@tanstack/react-query";
+// import { toast } from "sonner";
+
+// export const useDeleteProject = () => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: ({
+//       projectId,
+//       userId,
+//     }: {
+//       projectId: string;
+//       userId: string;
+//     }) => deleteProjectService(projectId, userId),
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({
+//         queryKey: ["getRecentlyViewedProjects"],
+//       });
+//       queryClient.invalidateQueries({ queryKey: ["getProjects"] });
+//     },
+//     onError: (error) => {
+//       if (error instanceof Error) {
+//         toast.error(`Error al eliminar el proyecto`);
+//       } else {
+//         toast.error("Error desconocido al eliminar el proyecto");
+//       }
+//       toast.error("Error en la mutación al borrar el proyecto");
+//     },
+//   });
+// };
+
+import { deleteProjectService } from "@/projects/services/deleteProjectService";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const useDeleteProject = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const deleteProject = async (project_id: string): Promise<void> => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const user = await getUser();
-
-      if (!user || !user.id) {
-        throw new Error("Usuario no autenticado");
-      }
-
-      await deleteProjectService(project_id, user.id);
-    } catch (err: any) {
-      setError(err.message || "Error inesperado");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { deleteProject, loading, error };
+  return useMutation({
+    mutationFn: async ({
+      projectId,
+      userId,
+    }: {
+      projectId: string;
+      userId: string;
+    }) => deleteProjectService(projectId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getRecentlyViewedProjects"] });
+      queryClient.invalidateQueries({ queryKey: ["getProjects"] });
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error
+          ? `Error al eliminar el proyecto`
+          : "Error desconocido"
+      );
+    },
+  });
 };

@@ -1,15 +1,17 @@
-"use client";
-
-import { useRecentlyViewedProjects } from "@/projects/hooks/useRecentlyViewedProjects";
+import { useGetRecentlyViewedProjects } from "@/projects/hooks/useGetRecentlyViewedProjects";
 import ProjectItem from "@/projects/components/ProjectItem";
 import ClockIcon from "@/icons/ClockIcon";
 
 function RecentlyViewedProjects({ user_id }: { user_id: string }) {
-  const { projects, loading, error, fetchRecentlyViewedProjects } =
-    useRecentlyViewedProjects(true);
+  const {
+    data: projects,
+    isError,
+    isLoading,
+  } = useGetRecentlyViewedProjects(user_id);
 
-  if (error) return <p>Error: {error}</p>;
-  if (projects.length === 0) return null;
+  if (!projects || projects.length === 0) {
+    return null
+  }
 
   return (
     <section aria-labelledby="recently-viewed" className="mt-8 mb-24 sm:mt-16">
@@ -23,7 +25,9 @@ function RecentlyViewedProjects({ user_id }: { user_id: string }) {
         </h2>
       </header>
       <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
-        {loading ? (
+        {isError ? (
+          <p className="text-red-500">Error al obtener los proyectos</p>
+        ) : isLoading ? (
           <div>cargando..</div>
         ) : (
           projects.map(({ id, project_id, project }) => (
@@ -34,7 +38,6 @@ function RecentlyViewedProjects({ user_id }: { user_id: string }) {
               owner_id={project.owner_id}
               name={project.name}
               created_at={project.created_at}
-              fetchRecentlyViewedProjects={fetchRecentlyViewedProjects}
             />
           ))
         )}

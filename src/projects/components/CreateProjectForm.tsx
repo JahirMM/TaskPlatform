@@ -3,13 +3,10 @@ import { useState } from "react";
 
 interface CreateProjectFormProps {
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
-  fetchProjects: () => Promise<void>;
+  userId: string;
 }
 
-function CreateProjectForm({
-  setShowForm,
-  fetchProjects,
-}: CreateProjectFormProps) {
+function CreateProjectForm({ setShowForm, userId }: CreateProjectFormProps) {
   const [nameValue, setNameValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
 
@@ -67,7 +64,7 @@ function CreateProjectForm({
         <CreateProjectButton
           projectName={nameValue}
           projectDescription={descriptionValue}
-          fetchProjects={fetchProjects}
+          userId={userId}
           setShowForm={setShowForm}
         />
       </form>

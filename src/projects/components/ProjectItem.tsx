@@ -4,7 +4,7 @@ import { useDeleteProject } from "@/projects/hooks/useDeleteProject";
 import { formatDate } from "@/common/utils/formatDate";
 
 import TrashIcon from "@/icons/TrashIcon";
-import { toast } from "sonner";
+import { useState } from "react";
 
 interface ProjectItemProps {
   id: string;
@@ -12,8 +12,6 @@ interface ProjectItemProps {
   owner_id: string;
   name: string;
   created_at: string;
-  fetchProjects?: () => Promise<void>;
-  fetchRecentlyViewedProjects?: () => Promise<void>;
 }
 
 function ProjectItem({
@@ -22,32 +20,24 @@ function ProjectItem({
   owner_id,
   name,
   created_at,
-  fetchProjects,
-  fetchRecentlyViewedProjects,
 }: ProjectItemProps) {
-  const { deleteProject, loading, error } = useDeleteProject();
-  const { createRecentlyViewedProject } = useCreateRecentlyViewedProject();
+  const mutationCreateRecentlyViewedProject = useCreateRecentlyViewedProject();
+  const mutationDeleteProject = useDeleteProject();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = async (event: React.MouseEvent) => {
     event.stopPropagation();
-
-    if (error) {
-      toast.error("Error al eliminar el porject");
-    }
-
-    await deleteProject(id);
-
-    if (typeof fetchProjects === "function") {
-      await fetchProjects();
-    }
+    setIsLoading(true);
+    await mutationDeleteProject.mutateAsync({ projectId: id, userId: user_id });
+    setIsLoading(false);
   };
 
   const handleProjectItem = async () => {
-    await createRecentlyViewedProject(id, user_id);
-
-    if (typeof fetchRecentlyViewedProjects === "function") {
-      await fetchRecentlyViewedProjects();
-    }
+    await mutationCreateRecentlyViewedProject.mutate({
+      project_id: id,
+      user_id: user_id,
+    });
   };
 
   return (
@@ -59,7 +49,7 @@ function ProjectItem({
         <h3 className="text-sm font-bold text-gray-200 line-clamp-2">{name}</h3>
 
         {owner_id === user_id &&
-          (loading ? (
+          (isLoading ? (
             <div className="max-w-5 max-h-5 min-w-5 min-h-5 border-2 border-t-2 border-gray-200 rounded-full animate-spin border-t-action"></div>
           ) : (
             <button

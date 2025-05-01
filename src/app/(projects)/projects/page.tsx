@@ -2,25 +2,26 @@
 
 import RecentlyViewedProjects from "@/projects/components/RecentlyViewedProjects";
 import ProjectList from "@/projects/components/ProjectList";
-import { getUser } from "@/common/services/getUser";
-import { useEffect, useState } from "react";
+import { useGetUser } from "@/common/hooks/useGetUser";
+import { redirect } from "next/navigation";
 
 function Page() {
-  const [userId, setUserId] = useState("");
+  const { data, isError, error } = useGetUser();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getUser();
-      setUserId(userData.id);
-    };
+  if (
+    isError &&
+    error instanceof Error &&
+    error.message === "No authenticated user"
+  ) {
+    redirect("/");
+  }
 
-    fetchUser();
-  }, []);
+  if (!data) return null;
 
   return (
     <div className="px-10 mx-auto lg:container lg:px-16 xl:px-40">
-      <RecentlyViewedProjects user_id={userId} />
-      <ProjectList user_id={userId} />
+      <RecentlyViewedProjects user_id={data.id} />
+      <ProjectList user_id={data.id} />
     </div>
   );
 }

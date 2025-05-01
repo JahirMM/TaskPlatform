@@ -1,20 +1,21 @@
-import { createProject } from "@/projects/services/createProject";
+import { useCreateProject } from "@/projects/hooks/useCreateProject";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface CreateProjectButtonProps {
   projectName: string;
   projectDescription: string;
-  fetchProjects: () => Promise<void>;
+  userId: string;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function CreateProjectButton({
   projectName,
   projectDescription,
-  fetchProjects,
+  userId,
   setShowForm,
 }: CreateProjectButtonProps) {
+  const mutationCreateProject = useCreateProject();
   const [isLoading, setIsLoading] = useState(false);
 
   const addProject = async (e: React.FormEvent) => {
@@ -26,11 +27,13 @@ function CreateProjectButton({
       return;
     }
 
-    await createProject({ name: projectName, description: projectDescription });
-    await fetchProjects();
-
-    setShowForm(false);
+    await mutationCreateProject.mutateAsync({
+      name: projectName,
+      description: projectDescription,
+      owner_id: userId,
+    });
     setIsLoading(false);
+    setShowForm(false);
   };
 
   return (

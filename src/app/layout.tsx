@@ -1,3 +1,4 @@
+import TanstackProvider from "@/providers/TanstackProvider";
 import Header from "@/common/components/Header";
 import { Poppins } from "next/font/google";
 import type { Metadata } from "next";
@@ -24,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
-        <Header />
-        <main>{children}</main>
-        <Toaster position="top-right" richColors />
+        <TanstackProvider>
+          <Header />
+          <main>{children}</main>
+          <Toaster position="top-right" richColors />
+        </TanstackProvider>
       </body>
     </html>
   );

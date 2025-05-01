@@ -1,11 +1,11 @@
-import { getProjectsService } from "@/projects/services/getProjectsService";
+import { getRecentlyViewedProjectsService } from "@/projects/services/getRecentlyViewedProjectsService";
 import { useToastOnError } from "@/common/hooks/useToastOnError";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetProjects = (userId: string | undefined) => {
+export const useGetRecentlyViewedProjects = (userId: string | undefined) => {
   const { data, error, isError, isLoading } = useQuery({
-    queryKey: ["getProjects", userId],
-    queryFn: () => getProjectsService(userId!),
+    queryKey: ["getRecentlyViewedProjects", userId],
+    queryFn: () => getRecentlyViewedProjectsService(userId!),
     enabled: !!userId,
     staleTime: 1000 * 60 * 5,
   });

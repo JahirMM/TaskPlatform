@@ -1,13 +1,13 @@
-import { getProjectsService } from "@/projects/services/getProjectsService";
+import { getUserService } from "@/common/services/getUserService";
 import { useToastOnError } from "@/common/hooks/useToastOnError";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetProjects = (userId: string | undefined) => {
+export const useGetUser = () => {
   const { data, error, isError, isLoading } = useQuery({
-    queryKey: ["getProjects", userId],
-    queryFn: () => getProjectsService(userId!),
-    enabled: !!userId,
+    queryKey: ["getUser"],
+    queryFn: getUserService,
     staleTime: 1000 * 60 * 5,
+    retry: false,
   });
 
   useToastOnError(isError, error);
