@@ -28,8 +28,8 @@ function Header() {
 
   return (
     <>
-      <header className="w-full border-b border-bg-secondary">
-        <div className="flex items-center justify-between w-full h-16 px-10 mx-auto text-sm lg:container lg:px-16 xl:px-40">
+      <header className="flex items-center w-full h-16 border-b border-bg-secondary">
+        <div className="flex items-center justify-between w-full px-10 mx-auto text-sm lg:container lg:px-16 xl:px-40">
           <Link
             href="/"
             className="text-2xl font-bold text-action hover:text-action-hover"

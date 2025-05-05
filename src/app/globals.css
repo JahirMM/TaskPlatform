@@ -15,3 +15,27 @@ body {
   font-family: var(--font-poppins), "Helvetica", "Arial", sans-serif;
   background-color: #131517;
 }
+
+/* styles.css o globals.css */
+.scrollbar-custom {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #52525b #1f2937; /* pulgar y pista (gris y gris oscuro) */
+}
+
+/* Chrome, Edge y Safari */
+.scrollbar-custom::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #1f2937; /* bg-gray-800 */
+  border-radius: 100vh;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #52525b; /* bg-gray-600 */
+  border-radius: 100vh;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}

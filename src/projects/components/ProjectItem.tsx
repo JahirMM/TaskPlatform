@@ -5,6 +5,7 @@ import { formatDate } from "@/common/utils/formatDate";
 
 import TrashIcon from "@/icons/TrashIcon";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ProjectItemProps {
   id: string;
@@ -21,6 +22,8 @@ function ProjectItem({
   name,
   created_at,
 }: ProjectItemProps) {
+  const router = useRouter();
+
   const mutationCreateRecentlyViewedProject = useCreateRecentlyViewedProject();
   const mutationDeleteProject = useDeleteProject();
 
@@ -34,10 +37,12 @@ function ProjectItem({
   };
 
   const handleProjectItem = async () => {
-    await mutationCreateRecentlyViewedProject.mutate({
+    await mutationCreateRecentlyViewedProject.mutateAsync({
       project_id: id,
       user_id: user_id,
     });
+
+    router.push(`/projects/${id}`);
   };
 
   return (
@@ -50,7 +55,7 @@ function ProjectItem({
 
         {owner_id === user_id &&
           (isLoading ? (
-            <div className="max-w-5 max-h-5 min-w-5 min-h-5 border-2 border-t-2 border-gray-200 rounded-full animate-spin border-t-action"></div>
+            <div className="border-2 border-t-2 border-gray-200 rounded-full max-w-5 max-h-5 min-w-5 min-h-5 animate-spin border-t-action"></div>
           ) : (
             <button
               type="button"
