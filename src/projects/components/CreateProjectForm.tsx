@@ -1,4 +1,5 @@
 import CreateProjectButton from "@/projects/components/CreateProjectButton";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 interface CreateProjectFormProps {
@@ -7,8 +8,10 @@ interface CreateProjectFormProps {
 }
 
 function CreateProjectForm({ setShowForm, userId }: CreateProjectFormProps) {
-  const [nameValue, setNameValue] = useState("");
+  const pathname = usePathname();
+
   const [descriptionValue, setDescriptionValue] = useState("");
+  const [nameValue, setNameValue] = useState("");
 
   const handleRefName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -62,10 +65,11 @@ function CreateProjectForm({ setShowForm, userId }: CreateProjectFormProps) {
         </div>
 
         <CreateProjectButton
-          projectName={nameValue}
-          projectDescription={descriptionValue}
-          userId={userId}
           setShowForm={setShowForm}
+          projectDescription={descriptionValue}
+          projectName={nameValue}
+          pathname={pathname}
+          userId={userId}
         />
       </form>
     </section>

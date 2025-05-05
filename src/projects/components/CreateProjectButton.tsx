@@ -1,19 +1,22 @@
 import { useCreateProject } from "@/projects/hooks/useCreateProject";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface CreateProjectButtonProps {
-  projectName: string;
-  projectDescription: string;
-  userId: string;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  projectDescription: string;
+  projectName: string;
+  pathname: string;
+  userId: string;
 }
 
 function CreateProjectButton({
-  projectName,
-  projectDescription,
-  userId,
   setShowForm,
+  projectDescription,
+  projectName,
+  pathname,
+  userId,
 }: CreateProjectButtonProps) {
   const mutationCreateProject = useCreateProject();
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +37,9 @@ function CreateProjectButton({
     });
     setIsLoading(false);
     setShowForm(false);
+    if (pathname !== "projects") {
+      redirect("/projects");
+    }
   };
 
   return (
