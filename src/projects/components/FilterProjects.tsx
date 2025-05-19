@@ -31,6 +31,7 @@ function FilterProjects({
         />
 
         <button
+          type="button"
           onClick={() => setShowFilter(!showFilter)}
           className="p-2 text-white rounded-md cursor-pointer bg-action lg:hidden"
         >
@@ -46,6 +47,7 @@ function FilterProjects({
         <div className="absolute top-[100%] right-0 mt-2 w-52 bg-surface border border-border rounded-lg p-3 flex flex-col gap-2 shadow-xl lg:hidden z-50">
           {["all", "owned", "invited"].map((type) => (
             <button
+              type="button"
               key={type}
               onClick={() => {
                 setFilterType(type as any);
@@ -70,6 +72,7 @@ function FilterProjects({
       <div className="hidden gap-2 lg:flex">
         {["all", "owned", "invited"].map((type) => (
           <button
+            type="button"
             key={type}
             onClick={() => setFilterType(type as any)}
             className={`px-3 py-2 text-sm rounded-md ${

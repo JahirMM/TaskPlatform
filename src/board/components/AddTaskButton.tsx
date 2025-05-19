@@ -1,13 +1,24 @@
 import PlusIcon from "@/icons/PlusIcon";
 
-export default function AddTaskButton() {
+interface AddTaskButtonProps {
+  createTask: (id: string | number) => void;
+  columnId: string | number;
+}
+
+export default function AddTaskButton({
+  createTask,
+  columnId,
+}: AddTaskButtonProps) {
   return (
     <button
       type="button"
-      className="flex items-center gap-2 px-3 py-2 transition-colors duration-300 rounded-lg hover:bg-action hover:font-semibold"
+      onClick={() => createTask(columnId)}
+      className="flex items-center gap-3 p-3 transition-colors duration-500 border-4 rounded-lg cursor-pointer border-bg-column hover:bg-surface group"
     >
-      <PlusIcon className="text-gray-300 size-3" />
-      <span className="text-sm text-gray-300">Añadir tarea</span>
+      <PlusIcon className="font-bold text-action size-3 group-hover:text-action-hover" />
+      <span className="text-sm font-bold text-action group-hover:text-action-hover">
+        crear tarea
+      </span>
     </button>
   );
 }

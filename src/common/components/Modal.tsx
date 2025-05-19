@@ -17,6 +17,7 @@ function Modal({ title, children, onClose }: ModalProps) {
         <div className="flex items-center justify-between mb-10">
           <h2 className="text-xl font-bold text-white">{title}</h2>
           <button
+            type="button"
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >

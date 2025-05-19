@@ -1,40 +1,39 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #131517;         /* Fondo principal (primario) */
-  --color-bg-secondary: #1A1C20;       /* Fondo secundario */
-  --color-surface: #2D2F33;            /* Elemento seleccionable */
-  --color-surface-hover: #3F4148;      /* Hover del elemento seleccionable */
-  
-  --color-action: #BB368C;             /* Botón de acción */
-  --color-action-hover: #F23AB1;       /* Hover del botón de acción */
-}
+  --color-bg-primary: #131517; /* Fondo principal (primario) */
+  --color-bg-secondary: #1a1c20; /* Fondo secundario */
+  --color-surface: #2d2f33; /* Elemento seleccionable */
+  --color-surface-hover: #3f4148; /* Hover del elemento seleccionable */
 
+  --color-bg-column: #1e2025; /* Hover del elemento seleccionable */
+
+  --color-action: #bb368c; /* Botón de acción */
+  --color-action-hover: #f23ab1; /* Hover del botón de acción */
+}
 
 body {
   font-family: var(--font-poppins), "Helvetica", "Arial", sans-serif;
   background-color: #131517;
 }
 
-/* styles.css o globals.css */
 .scrollbar-custom {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #52525b #1f2937; /* pulgar y pista (gris y gris oscuro) */
+  scrollbar-width: thin;
+  scrollbar-color: #52525b #1f2937;
 }
 
-/* Chrome, Edge y Safari */
 .scrollbar-custom::-webkit-scrollbar {
   height: 8px;
   width: 8px;
 }
 
 .scrollbar-custom::-webkit-scrollbar-track {
-  background: #1f2937; /* bg-gray-800 */
+  background: #1f2937;
   border-radius: 100vh;
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: #52525b; /* bg-gray-600 */
+  background-color: #52525b;
   border-radius: 100vh;
   border: 2px solid transparent;
   background-clip: content-box;
