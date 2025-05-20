@@ -17,8 +17,8 @@ interface ColumnContainerProps {
   tasks: TaskInterface[];
 }
 function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
+  const [inputValue, setInputValue] = useState(column.name);
   const [editMode, setEditMode] = useState(false);
-  const [inputValue, setInputValue] = useState(column.title);
   const tasksIds = useMemo(() => {
     return tasks.map((task) => task.id);
   }, [tasks]);
@@ -44,13 +44,13 @@ function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
     transform: CSS.Transform.toString(transform),
   };
 
-  const updateColumn = (id: string | number, title: string) => {
+  const updateColumn = (id: string | number, name: string) => {
     console.log("ACTUALIZADO");
-    console.log(`Titulo: ${title} ---- ID: ${id}`);
+    console.log(`Titulo: ${name} ---- ID: ${id}`);
   };
 
   const handleBlurOrEnter = () => {
-    if (inputValue !== column.title) {
+    if (inputValue !== column.name) {
       updateColumn(column.id, inputValue);
     }
     setEditMode(false);
@@ -80,7 +80,7 @@ function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
         }}
         className="bg-bg-primary flex items-center justify-between text-md h-[60px] cursor-grab rounded-lg rounded-b-none p-3 font-bold border-bg-column border-4"
       >
-        {!editMode && <h2 className="text-sm text-white">{column.title}</h2>}
+        {!editMode && <h2 className="text-sm text-white line-clamp-1">{column.name} -- {column.position}</h2>}
         {editMode && (
           <input
             value={inputValue}

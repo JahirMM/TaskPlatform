@@ -18,6 +18,7 @@ import { TaskInterface } from "@/board/interfaces/taskInterface";
 
 import ColumnContainer from "@/board/components/ColumnContainer";
 import AddColumnButton from "@/board/components/AddColumnButton";
+import PlusIcon from "@/icons/PlusIcon";
 
 function generateId() {
   return Math.floor(Math.random() * 10001);
@@ -28,6 +29,7 @@ function KanbanBoard() {
   const [activeColumn, setActiveColumn] = useState<ColumnInterface | null>(
     null
   );
+  const [addColumn, setAddColumn] = useState(false);
 
   const [tasks, setTasks] = useState<TaskInterface[]>([]);
   const [activeTask, setActiveTask] = useState<TaskInterface | null>(null);
@@ -39,15 +41,6 @@ function KanbanBoard() {
   }, []);
 
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
-
-  const createColumn = () => {
-    const columnToAdd: ColumnInterface = {
-      id: generateId(),
-      title: `Column ${columns.length + 1}`,
-    };
-
-    setColumns([...columns, columnToAdd]);
-  };
 
   const onDragStart = (event: DragStartEvent) => {
     const type = event.active.data.current?.type;
@@ -164,7 +157,23 @@ function KanbanBoard() {
               ))}
             </SortableContext>
           </div>
-          <AddColumnButton createColumn={createColumn} />
+          {addColumn && (
+            <AddColumnButton
+              columns={columns}
+              setColumns={setColumns}
+              setAddColumn={setAddColumn}
+            />
+          )}
+          {!addColumn && (
+            <button
+              type="button"
+              onClick={() => setAddColumn(true)}
+              className="flex gap-2 items-center justify-center h-[40px] w-[200px] min-w-[200px] p-2 cursor-pointer rounded-lg bg-action hover:bg-action-hover"
+            >
+              <PlusIcon className="text-black size-4" />
+              <span className="text-sm font-medium">Agregar Columna</span>
+            </button>
+          )}
         </div>
         {isClient &&
           createPortal(

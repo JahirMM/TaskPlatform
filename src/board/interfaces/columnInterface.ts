@@ -1,6 +1,7 @@
-type Id = string | number;
-
 export interface ColumnInterface {
-  id: Id;
-  title: string;
+  id: string;
+  project_id: string;
+  name: string;
+  position: number;
+  created_at: string;
 }
