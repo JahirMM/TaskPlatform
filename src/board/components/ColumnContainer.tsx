@@ -6,24 +6,18 @@ import { CSS } from "@dnd-kit/utilities";
 import { ColumnInterface } from "@/board/interfaces/columnInterface";
 import { TaskInterface } from "@/board/interfaces/taskInterface";
 
+import DeleteColumnButton from "@/board/components/DeleteColumnButton";
 import AddTaskButton from "@/board/components/AddTaskButton";
 import TaskCard from "@/board/components/TaskCard";
 
-import TrashIcon from "@/icons/TrashIcon";
-import { useUpdateColumn } from "../hook/useUpdateColumn";
+import { useUpdateColumn } from "@/board/hook/useUpdateColumn";
 
 interface ColumnContainerProps {
-  projectId: string;
   column: ColumnInterface;
   createTask: (id: string | number) => void;
   tasks: TaskInterface[];
 }
-function ColumnContainer({
-  projectId,
-  column,
-  createTask,
-  tasks,
-}: ColumnContainerProps) {
+function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
   const mutationUpdateColumn = useUpdateColumn();
 
   const [inputValue, setInputValue] = useState(column.name);
@@ -111,13 +105,7 @@ function ColumnContainer({
             className="px-2 text-sm text-white bg-black border rounded outline-none focus:border-rose-500"
           />
         )}
-        <button
-          type="button"
-          onClick={() => console.log("HOLA")}
-          className="p-2 rounded-md cursor-pointer hover:bg-surface"
-        >
-          <TrashIcon className="text-action size-4 hover:text-action-hover" />
-        </button>
+        <DeleteColumnButton columnId={column.id} />
       </header>
       <div className="flex flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto grow">
         <SortableContext items={tasksIds}>

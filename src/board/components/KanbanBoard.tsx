@@ -173,7 +173,6 @@ function KanbanBoard() {
               {columns.map((column) => (
                 <ColumnContainer
                   key={column.id}
-                  projectId={projectId}
                   column={column}
                   createTask={createTask}
                   tasks={tasks.filter((task) => task.columnId === column.id)}
@@ -205,7 +204,6 @@ function KanbanBoard() {
             <DragOverlay>
               {activeColumn && (
                 <ColumnContainer
-                  projectId={projectId}
                   column={activeColumn}
                   createTask={createTask}
                   tasks={tasks.filter(
