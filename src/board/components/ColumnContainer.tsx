@@ -10,6 +10,7 @@ import AddTaskButton from "@/board/components/AddTaskButton";
 import TaskCard from "@/board/components/TaskCard";
 
 import TrashIcon from "@/icons/TrashIcon";
+import { useUpdateColumn } from "../hook/useUpdateColumn";
 
 interface ColumnContainerProps {
   projectId: string;
@@ -23,8 +24,11 @@ function ColumnContainer({
   createTask,
   tasks,
 }: ColumnContainerProps) {
+  const mutationUpdateColumn = useUpdateColumn();
+
   const [inputValue, setInputValue] = useState(column.name);
   const [editMode, setEditMode] = useState(false);
+
   const tasksIds = useMemo(() => {
     return tasks.map((task) => task.id);
   }, [tasks]);
@@ -50,14 +54,16 @@ function ColumnContainer({
     transform: CSS.Transform.toString(transform),
   };
 
-  const updateColumn = (id: string | number, name: string) => {
-    console.log("ACTUALIZADO");
-    console.log(`Titulo: ${name} ---- ID: ${id}`);
+  const updateColumnName = (columnId: string, name: string) => {
+    mutationUpdateColumn.mutate({
+      columnId: columnId,
+      updates: { name: name },
+    });
   };
 
   const handleBlurOrEnter = () => {
     if (inputValue !== column.name) {
-      updateColumn(column.id, inputValue);
+      updateColumnName(column.id, inputValue);
     }
     setEditMode(false);
   };

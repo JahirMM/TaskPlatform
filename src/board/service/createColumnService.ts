@@ -4,7 +4,10 @@ import { CreateColumnRequestInterface } from "../interfaces/createColumnRequestI
 export const createColumnService = async (
   request: CreateColumnRequestInterface
 ) => {
-  const { data, error } = await supabase.from("columns").insert([request]).select();;
+  const { data, error } = await supabase
+    .from("columns")
+    .insert([request])
+    .select();
 
   if (error) {
     throw new Error("Error al crear una columna");

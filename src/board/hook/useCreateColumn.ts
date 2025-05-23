@@ -11,9 +11,7 @@ export const useCreateColumn = () => {
     mutationFn: async (request: CreateColumnRequestInterface) =>
       createColumnService(request),
     onSuccess: () => {
-      console.log("ACtualizar listado de columnas");
-
-        queryClient.invalidateQueries({ queryKey: ["getColumns"] });
+      queryClient.invalidateQueries({ queryKey: ["getColumns"] });
     },
     onError: (error) => {
       toast.error(
