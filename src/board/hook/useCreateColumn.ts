@@ -13,7 +13,7 @@ export const useCreateColumn = () => {
     onSuccess: () => {
       console.log("ACtualizar listado de columnas");
 
-      //   queryClient.invalidateQueries({ queryKey: ["getColumns"] });
+        queryClient.invalidateQueries({ queryKey: ["getColumns"] });
     },
     onError: (error) => {
       toast.error(

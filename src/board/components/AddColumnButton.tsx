@@ -8,22 +8,19 @@ import XmarkIcon from "@/icons/XmarkIcon";
 import { useRef } from "react";
 
 interface AddColumnButtonProps {
+  projectId: string;
   columns: ColumnInterface[];
   setColumns: React.Dispatch<React.SetStateAction<ColumnInterface[]>>;
   setAddColumn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function AddColumnButton({
+  projectId,
   columns,
   setColumns,
   setAddColumn,
 }: AddColumnButtonProps) {
-  const params = useParams();
   const mutationCreateColumn = useCreateColumn();
-
-  const projectId = Array.isArray(params.projectId)
-    ? params.projectId[0]
-    : params.projectId;
 
   const inputRef = useRef<HTMLInputElement>(null);
 

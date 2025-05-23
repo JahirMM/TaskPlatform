@@ -18,6 +18,10 @@ import { TaskInterface } from "@/board/interfaces/taskInterface";
 
 import ColumnContainer from "@/board/components/ColumnContainer";
 import AddColumnButton from "@/board/components/AddColumnButton";
+
+import { useProjectId } from "@/board/hook/useGetProjectIs";
+import { useGetColumns } from "@/board/hook/useGetColumns";
+
 import PlusIcon from "@/icons/PlusIcon";
 
 function generateId() {
@@ -25,6 +29,9 @@ function generateId() {
 }
 
 function KanbanBoard() {
+  const projectId = useProjectId();
+  const { data, isError, isLoading } = useGetColumns(projectId ?? "");
+
   const [columns, setColumns] = useState<ColumnInterface[]>([]);
   const [activeColumn, setActiveColumn] = useState<ColumnInterface | null>(
     null
@@ -35,10 +42,6 @@ function KanbanBoard() {
   const [activeTask, setActiveTask] = useState<TaskInterface | null>(null);
 
   const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
@@ -136,6 +139,26 @@ function KanbanBoard() {
     })
   );
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    setColumns(data || []);
+  }, [data]);
+
+  if (!projectId) {
+    return <div>Proyecto no encontrado</div>;
+  }
+
+  if (isError) {
+    return <div>Error al obtener las columnas</div>;
+  }
+
+  if (isLoading) {
+    return <div>Cargando...</div>;
+  }
+
   return (
     <div className="m-auto flex items-center h-[calc(100vh-64px)] w-full overflow-x-auto overflow-y-hidden px-[40px]">
       <DndContext
@@ -150,6 +173,7 @@ function KanbanBoard() {
               {columns.map((column) => (
                 <ColumnContainer
                   key={column.id}
+                  projectId={projectId}
                   column={column}
                   createTask={createTask}
                   tasks={tasks.filter((task) => task.columnId === column.id)}
@@ -159,6 +183,7 @@ function KanbanBoard() {
           </div>
           {addColumn && (
             <AddColumnButton
+              projectId={projectId}
               columns={columns}
               setColumns={setColumns}
               setAddColumn={setAddColumn}
@@ -180,6 +205,7 @@ function KanbanBoard() {
             <DragOverlay>
               {activeColumn && (
                 <ColumnContainer
+                  projectId={projectId}
                   column={activeColumn}
                   createTask={createTask}
                   tasks={tasks.filter(

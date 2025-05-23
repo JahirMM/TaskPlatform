@@ -12,11 +12,17 @@ import TaskCard from "@/board/components/TaskCard";
 import TrashIcon from "@/icons/TrashIcon";
 
 interface ColumnContainerProps {
+  projectId: string;
   column: ColumnInterface;
   createTask: (id: string | number) => void;
   tasks: TaskInterface[];
 }
-function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
+function ColumnContainer({
+  projectId,
+  column,
+  createTask,
+  tasks,
+}: ColumnContainerProps) {
   const [inputValue, setInputValue] = useState(column.name);
   const [editMode, setEditMode] = useState(false);
   const tasksIds = useMemo(() => {
@@ -80,7 +86,11 @@ function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
         }}
         className="bg-bg-primary flex items-center justify-between text-md h-[60px] cursor-grab rounded-lg rounded-b-none p-3 font-bold border-bg-column border-4"
       >
-        {!editMode && <h2 className="text-sm text-white line-clamp-1">{column.name} -- {column.position}</h2>}
+        {!editMode && (
+          <h2 className="text-sm text-white line-clamp-1">
+            {column.name} -- {column.position}
+          </h2>
+        )}
         {editMode && (
           <input
             value={inputValue}
