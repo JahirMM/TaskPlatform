@@ -19,6 +19,8 @@ import { TaskInterface } from "@/board/interfaces/taskInterface";
 import ColumnContainer from "@/board/components/ColumnContainer";
 import AddColumnButton from "@/board/components/AddColumnButton";
 
+import { useReorderColumns } from "@/board/hook/useReorderColumns";
+import { useUpdateColumn } from "@/board/hook/useUpdateColumn";
 import { useProjectId } from "@/board/hook/useGetProjectIs";
 import { useGetColumns } from "@/board/hook/useGetColumns";
 
@@ -30,6 +32,9 @@ function generateId() {
 
 function KanbanBoard() {
   const projectId = useProjectId();
+
+  const mutationUpdateColumn = useUpdateColumn();
+  const reorderColumns = useReorderColumns();
   const { data, isError, isLoading } = useGetColumns(projectId ?? "");
 
   const [columns, setColumns] = useState<ColumnInterface[]>([]);
@@ -58,8 +63,7 @@ function KanbanBoard() {
       return;
     }
   };
-
-  const onDragEnd = (event: DragEndEvent) => {
+  const onDragEnd = async (event: DragEndEvent) => {
     setActiveColumn(null);
     setActiveTask(null);
     const { active, over } = event;
@@ -71,12 +75,15 @@ function KanbanBoard() {
 
     if (activeId === overId) return;
 
-    setColumns((columns) => {
-      const activateColumnIndex = columns.findIndex(
-        (col) => col.id === activeId
-      );
-      const overColumnIndex = columns.findIndex((col) => col.id === overId);
-      return arrayMove(columns, activateColumnIndex, overColumnIndex);
+    setColumns((prevColumns) => {
+      const activeIndex = prevColumns.findIndex((col) => col.id === activeId);
+      const overIndex = prevColumns.findIndex((col) => col.id === overId);
+
+      const newColumns = arrayMove(prevColumns, activeIndex, overIndex);
+
+      reorderColumns(newColumns);
+
+      return newColumns;
     });
   };
 

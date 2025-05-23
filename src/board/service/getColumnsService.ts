@@ -7,7 +7,8 @@ export const getColumnsService = async (
   const { data, error } = await supabase
     .from("columns")
     .select("*")
-    .eq("project_id", projectId);
+    .eq("project_id", projectId)
+    .order("position", { ascending: true });
 
   if (error) throw new Error(error.message);
   if (!data) return [];
