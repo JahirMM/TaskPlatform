@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ColumnInterface } from "../interfaces/columnInterface";
-import { updateColumnService } from "../service/updateColumnService";
+import { updateColumnService } from "@/board/service/updateColumnService";
+import { ColumnInterface } from "@/board/interfaces/columnInterface";
 import { toast } from "sonner";
 
 export const useUpdateColumn = () => {

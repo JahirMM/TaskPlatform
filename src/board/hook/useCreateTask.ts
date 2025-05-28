@@ -1,0 +1,23 @@
+import { CreateTaskRequestInterface } from "@/board/interfaces/CreateTaskRequestInterface";
+import { createTaskService } from "@/board/service/createTaskService";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+export const useCreateTask = () => {
+  //   const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (request: CreateTaskRequestInterface) =>
+      createTaskService(request),
+    onSuccess: () => {
+      console.log("TAREA CREADA");
+      //   queryClient.invalidateQueries({ queryKey: ["getTasks"] });
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? `Error al crear la tarea` : "Error desconocido"
+      );
+    },
+  });
+};

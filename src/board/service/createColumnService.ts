@@ -1,5 +1,5 @@
+import { CreateColumnRequestInterface } from "@/board/interfaces/createColumnRequestInterface";
 import { supabase } from "@/common/utils/supabase";
-import { CreateColumnRequestInterface } from "../interfaces/createColumnRequestInterface";
 
 export const createColumnService = async (
   request: CreateColumnRequestInterface

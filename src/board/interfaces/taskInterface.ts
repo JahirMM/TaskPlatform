@@ -1,7 +1,10 @@
-type Id = string | number;
-
 export interface TaskInterface {
-  id: Id;
-  columnId: Id;
-  content: string;
+  id:string;
+  column_id: string;
+  user_id: string;
+  title: string;
+  description: string | null;
+  position:number;
+  priority: string | null;
+  created_at: string;
 }

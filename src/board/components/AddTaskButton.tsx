@@ -1,8 +1,8 @@
 import PlusIcon from "@/icons/PlusIcon";
 
 interface AddTaskButtonProps {
-  createTask: (id: string | number) => void;
-  columnId: string | number;
+  createTask: (id: string) => void;
+  columnId: string;
 }
 
 export default function AddTaskButton({

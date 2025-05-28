@@ -58,7 +58,7 @@ export default function TaskCard({ task }: TaskCardProps) {
       }}
       className="flex gap-2 text-white bg-bg-primary p-2.5 h-[100px] min-h-[100px] rounded-xl cursor-grab hover:ring-2 hover:ring-inset hover:ring-gray-700 hover:bg-bg-secondary"
     >
-      <div className="flex-1 text-xs line-clamp-3">{task.content}</div>
+      <div className="flex-1 text-xs line-clamp-3">{task.title}</div>
       {mouseIsOver && (
         <div className="flex items-center">
           <button

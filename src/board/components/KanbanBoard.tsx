@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import {
@@ -13,42 +13,58 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 
+import { CreateTaskRequestInterface } from "@/board/interfaces/CreateTaskRequestInterface";
 import { ColumnInterface } from "@/board/interfaces/columnInterface";
 import { TaskInterface } from "@/board/interfaces/taskInterface";
 
 import ColumnContainer from "@/board/components/ColumnContainer";
 import AddColumnButton from "@/board/components/AddColumnButton";
 
+import { reorderTasksSafelyService } from "@/board/service/reorderTasksSafelyService";
+
 import { useReorderColumns } from "@/board/hook/useReorderColumns";
-import { useUpdateColumn } from "@/board/hook/useUpdateColumn";
-import { useProjectId } from "@/board/hook/useGetProjectIs";
 import { useGetColumns } from "@/board/hook/useGetColumns";
+import { useCreateTask } from "@/board/hook/useCreateTask";
 
 import PlusIcon from "@/icons/PlusIcon";
+import { useGetTasksByProjectId } from "../hook/useGetTasks";
+import { useUpdateTaskColumn } from "../hook/useUpdateTask";
 
-function generateId() {
-  return Math.floor(Math.random() * 10001);
-}
-
-function KanbanBoard() {
-  const projectId = useProjectId();
-
-  const mutationUpdateColumn = useUpdateColumn();
+function KanbanBoard({ projectId }: { projectId: string }) {
   const reorderColumns = useReorderColumns();
-  const { data, isError, isLoading } = useGetColumns(projectId ?? "");
+  const mutationCreateTask = useCreateTask();
+  const { data: columnsData, isError, isLoading } = useGetColumns(projectId);
+  const { data: tasksData } = useGetTasksByProjectId(projectId);
+  const mutationUpdateTasks = useUpdateTaskColumn();
 
   const [columns, setColumns] = useState<ColumnInterface[]>([]);
   const [activeColumn, setActiveColumn] = useState<ColumnInterface | null>(
     null
   );
-  const [addColumn, setAddColumn] = useState(false);
-
-  const [tasks, setTasks] = useState<TaskInterface[]>([]);
   const [activeTask, setActiveTask] = useState<TaskInterface | null>(null);
-
+  const [addColumn, setAddColumn] = useState(false);
+  const [tasks, setTasks] = useState<TaskInterface[]>([]);
   const [isClient, setIsClient] = useState(false);
 
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
+
+  useEffect(() => {
+    setColumns(columnsData || []);
+  }, [columnsData]);
+
+  useEffect(() => {
+    const fetchAllTasks = async () => {
+      if (!columnsData) return;
+
+      setTasks(tasksData || []);
+    };
+
+    fetchAllTasks();
+  }, [tasksData]);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const onDragStart = (event: DragStartEvent) => {
     const type = event.active.data.current?.type;
@@ -63,6 +79,7 @@ function KanbanBoard() {
       return;
     }
   };
+
   const onDragEnd = async (event: DragEndEvent) => {
     setActiveColumn(null);
     setActiveTask(null);
@@ -87,10 +104,10 @@ function KanbanBoard() {
     });
   };
 
-  const onDragOver = (event: DragOverEvent) => {
+  const onDragOver = async (event: DragOverEvent) => {
     const { active, over } = event;
 
-    if (!over) return;
+    if (!active || !over) return;
 
     const activeId = active.id;
     const overId = over.id;
@@ -99,43 +116,132 @@ function KanbanBoard() {
 
     const isActiveATask = active.data.current?.type === "Task";
     const isOverATask = over.data.current?.type === "Task";
+    const isOverAColumn = over.data.current?.type === "Column";
 
     if (!isActiveATask) return;
 
-    // mover entre tareas de la misma columa
-    if (isActiveATask && isOverATask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        const overIndex = tasks.findIndex((t) => t.id === overId);
+    const activeTask = tasks.find((t) => t.id === activeId);
+    if (!activeTask) return;
 
-        tasks[activeIndex].columnId = tasks[overIndex].columnId;
+    // 🔷 Caso 1: Mover sobre otra tarea
+    if (isOverATask) {
+      const overTask = tasks.find((t) => t.id === overId);
+      if (!overTask) return;
 
-        return arrayMove(tasks, activeIndex, overIndex);
-      });
+      // Solo si se mueve de posición o de columna
+      if (
+        activeTask.column_id !== overTask.column_id ||
+        tasks.findIndex((t) => t.id === activeId) !==
+          tasks.findIndex((t) => t.id === overId)
+      ) {
+        const newTasks = [...tasks];
+
+        // Filtrar tareas en la columna destino
+        const tasksInColumn = newTasks.filter(
+          (t) => t.column_id === overTask.column_id
+        );
+
+        const activeIndex = newTasks.findIndex((t) => t.id === activeId);
+        const overIndexInAll = newTasks.findIndex((t) => t.id === overId);
+
+        // Eliminamos tarea de su posición actual
+        newTasks.splice(activeIndex, 1);
+
+        // Creamos versión actualizada con nueva columna si es necesario
+        const updatedTask = {
+          ...activeTask,
+          column_id: overTask.column_id,
+        };
+
+        // Recalculamos posición de inserción
+        const overIndex = tasksInColumn.findIndex((t) => t.id === overId);
+        const destinationIndex =
+          activeTask.column_id === overTask.column_id &&
+          activeIndex < overIndexInAll
+            ? overIndex + 1
+            : overIndex;
+
+        // Insertamos la tarea en su nueva posición
+        const newTasksInColumn = [
+          ...tasksInColumn.filter((t) => t.id !== activeId),
+        ];
+        newTasksInColumn.splice(destinationIndex, 0, updatedTask);
+
+        // Reconstruimos la lista total de tareas
+        const newAllTasks = newTasks.filter(
+          (t) => t.column_id !== overTask.column_id
+        );
+        const finalTasks = [...newAllTasks, ...newTasksInColumn];
+
+        setTasks(finalTasks);
+
+        try {
+          await mutationUpdateTasks.mutateAsync({
+            taskId: String(activeId),
+            columnId: overTask.column_id,
+            position: 999,
+          });
+        } catch (error) {
+          console.error("Error actualizando tarea en onDragOver:", error);
+        } finally {
+          const orderedIds = finalTasks
+            .filter((t) => t.column_id === overTask.column_id)
+            .map((t) => t.id);
+
+          reorderTasksSafelyService(orderedIds, overTask.column_id);
+        }
+      }
     }
 
-    const isOverAColumn = over.data.current?.type === "Column";
+    // 🔷 Caso 2: Mover sobre una columna vacía
+    if (isOverAColumn) {
+      const newColumnId = String(overId);
 
-    // mover tarea en otra columna
-    if (isActiveATask && isOverAColumn) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      if (activeTask.column_id !== newColumnId) {
+        const updatedTask = { ...activeTask, column_id: newColumnId };
+        const newTasks = tasks
+          .filter((t) => t.id !== activeId)
+          .concat(updatedTask);
 
-        tasks[activeIndex].columnId = overId;
+        setTasks(newTasks);
 
-        return arrayMove(tasks, activeIndex, activeIndex);
-      });
+        try {
+          await mutationUpdateTasks.mutateAsync({
+            taskId: String(activeId),
+            columnId: newColumnId,
+            position: 999,
+          });
+        } catch (error) {
+          console.error("Error al mover tarea a columna vacía:", error);
+        } finally {
+          const tasksInColumn = newTasks
+            .filter((t) => t.column_id === newColumnId)
+            .map((t) => t.id);
+
+          reorderTasksSafelyService(tasksInColumn, newColumnId);
+        }
+      }
     }
   };
 
-  const createTask = (columnId: string | number) => {
-    const newTask: TaskInterface = {
-      id: generateId(),
-      columnId,
-      content: `Task ${tasks.length + 1}`,
+  const createTask = async (columnId: string) => {
+    const maxPosition = Math.max(
+      ...tasks.filter((ta) => ta.column_id === columnId).map((t) => t.position),
+      0
+    );
+
+    const request: CreateTaskRequestInterface = {
+      column_id: columnId,
+      user_id: "e4a46525-e683-42d9-973c-6d20b85a15db",
+      title: "tarea P -> " + (maxPosition + 1),
+      position: maxPosition + 1,
     };
 
-    setTasks([...tasks, newTask]);
+    const newTask: TaskInterface[] = await mutationCreateTask.mutateAsync(
+      request
+    );
+
+    setTasks([...tasks, newTask[0]]);
   };
 
   const sensors = useSensors(
@@ -145,14 +251,6 @@ function KanbanBoard() {
       },
     })
   );
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    setColumns(data || []);
-  }, [data]);
 
   if (!projectId) {
     return <div>Proyecto no encontrado</div>;
@@ -182,7 +280,7 @@ function KanbanBoard() {
                   key={column.id}
                   column={column}
                   createTask={createTask}
-                  tasks={tasks.filter((task) => task.columnId === column.id)}
+                  tasks={tasks.filter((t) => t.column_id === column.id)}
                 />
               ))}
             </SortableContext>
@@ -214,13 +312,13 @@ function KanbanBoard() {
                   column={activeColumn}
                   createTask={createTask}
                   tasks={tasks.filter(
-                    (task) => task.columnId === activeColumn.id
+                    (task) => task.column_id === activeColumn.id
                   )}
                 />
               )}
               {activeTask && (
                 <div className="text-white text-sm bg-bg-primary p-2.5 h-[100px] min-h-[100px] flex text-left rounded-xl ring-2 ring-gray-700">
-                  {activeTask.content}
+                  {activeTask.title}
                 </div>
               )}
             </DragOverlay>,

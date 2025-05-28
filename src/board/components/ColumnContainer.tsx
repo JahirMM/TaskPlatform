@@ -14,18 +14,17 @@ import { useUpdateColumn } from "@/board/hook/useUpdateColumn";
 
 interface ColumnContainerProps {
   column: ColumnInterface;
-  createTask: (id: string | number) => void;
+  createTask: (id: string) => void;
   tasks: TaskInterface[];
 }
+
 function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
   const mutationUpdateColumn = useUpdateColumn();
 
   const [inputValue, setInputValue] = useState(column.name);
   const [editMode, setEditMode] = useState(false);
 
-  const tasksIds = useMemo(() => {
-    return tasks.map((task) => task.id);
-  }, [tasks]);
+  const tasksIds = useMemo(() => (tasks ?? []).map((task) => task.id), [tasks]);
 
   const {
     setNodeRef,
