@@ -16,9 +16,10 @@ interface ColumnContainerProps {
   column: ColumnInterface;
   createTask: (id: string) => Promise<void>; 
   tasks: TaskInterface[];
+  projectId: string
 }
 
-function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
+function ColumnContainer({ column, createTask, tasks, projectId }: ColumnContainerProps) {
   const mutationUpdateColumn = useUpdateColumn();
 
   const [inputValue, setInputValue] = useState(column.name);
@@ -109,7 +110,7 @@ function ColumnContainer({ column, createTask, tasks }: ColumnContainerProps) {
       <div className="flex flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto grow">
         <SortableContext items={tasksIds}>
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
+            <TaskCard key={task.id} task={task} projectId={projectId}/>
           ))}
         </SortableContext>
       </div>

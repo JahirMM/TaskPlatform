@@ -292,6 +292,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
                   column={column}
                   createTask={createTask}
                   tasks={tasks.filter((t) => t.column_id === column.id)}
+                  projectId={projectId}
                 />
               ))}
             </SortableContext>
@@ -325,6 +326,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
                   tasks={tasks.filter(
                     (task) => task.column_id === activeColumn.id
                   )}
+                  projectId={projectId}
                 />
               )}
               {activeTask && (
