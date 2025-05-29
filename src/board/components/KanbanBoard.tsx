@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import {
@@ -23,19 +23,23 @@ import AddColumnButton from "@/board/components/AddColumnButton";
 import { reorderTasksSafelyService } from "@/board/service/reorderTasksSafelyService";
 
 import { useReorderColumns } from "@/board/hook/useReorderColumns";
+import { useGetTasksByProjectId } from "@/board/hook/useGetTasks";
+import { useUpdateTaskColumn } from "@/board/hook/useUpdateTask";
 import { useGetColumns } from "@/board/hook/useGetColumns";
 import { useCreateTask } from "@/board/hook/useCreateTask";
 
 import PlusIcon from "@/icons/PlusIcon";
-import { useGetTasksByProjectId } from "../hook/useGetTasks";
-import { useUpdateTaskColumn } from "../hook/useUpdateTask";
+import { useGetUser } from "@/common/hooks/useGetUser";
 
 function KanbanBoard({ projectId }: { projectId: string }) {
-  const reorderColumns = useReorderColumns();
-  const mutationCreateTask = useCreateTask();
   const { data: columnsData, isError, isLoading } = useGetColumns(projectId);
   const { data: tasksData } = useGetTasksByProjectId(projectId);
+  const { data: userData } = useGetUser();
+
   const mutationUpdateTasks = useUpdateTaskColumn();
+  const mutationCreateTask = useCreateTask();
+
+  const reorderColumns = useReorderColumns();
 
   const [columns, setColumns] = useState<ColumnInterface[]>([]);
   const [activeColumn, setActiveColumn] = useState<ColumnInterface | null>(
@@ -224,25 +228,32 @@ function KanbanBoard({ projectId }: { projectId: string }) {
     }
   };
 
-  const createTask = async (columnId: string) => {
-    const maxPosition = Math.max(
-      ...tasks.filter((ta) => ta.column_id === columnId).map((t) => t.position),
-      0
-    );
+  const createTask = useCallback(
+    async (columnId: string) => {
+      const maxPosition = Math.max(
+        ...tasks
+          .filter((ta) => ta.column_id === columnId)
+          .map((t) => t.position),
+        0
+      );
 
-    const request: CreateTaskRequestInterface = {
-      column_id: columnId,
-      user_id: "e4a46525-e683-42d9-973c-6d20b85a15db",
-      title: "tarea P -> " + (maxPosition + 1),
-      position: maxPosition + 1,
-    };
+      if (!userData) return;
 
-    const newTask: TaskInterface[] = await mutationCreateTask.mutateAsync(
-      request
-    );
+      const request: CreateTaskRequestInterface = {
+        column_id: columnId,
+        user_id: userData.id,
+        title: "tarea P -> " + (maxPosition + 1),
+        position: maxPosition + 1,
+      };
 
-    setTasks([...tasks, newTask[0]]);
-  };
+      const newTask: TaskInterface[] = await mutationCreateTask.mutateAsync(
+        request
+      );
+
+      setTasks([...tasks, newTask[0]]);
+    },
+    [tasks, mutationCreateTask, setTasks]
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

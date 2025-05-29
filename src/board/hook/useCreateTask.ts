@@ -5,14 +5,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const useCreateTask = () => {
-  //   const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (request: CreateTaskRequestInterface) =>
       createTaskService(request),
     onSuccess: () => {
-      console.log("TAREA CREADA");
-      //   queryClient.invalidateQueries({ queryKey: ["getTasks"] });
+      queryClient.invalidateQueries({ queryKey: ["getTasksByProjectId"] });
     },
     onError: (error) => {
       toast.error(

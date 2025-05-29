@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetTasksByProjectId = (projectId: string) => {
   return useQuery({
-    queryKey: ["getTasks", projectId],
+    queryKey: ["getTasksByProjectId", projectId],
     queryFn: async () => await getTasksByProjectIdService(projectId),
     staleTime: 1000 * 60 * 5,
   });
