@@ -27,9 +27,9 @@ import { useGetTasksByProjectId } from "@/board/hook/useGetTasks";
 import { useUpdateTaskColumn } from "@/board/hook/useUpdateTask";
 import { useGetColumns } from "@/board/hook/useGetColumns";
 import { useCreateTask } from "@/board/hook/useCreateTask";
+import { useGetUser } from "@/common/hooks/useGetUser";
 
 import PlusIcon from "@/icons/PlusIcon";
-import { useGetUser } from "@/common/hooks/useGetUser";
 
 function KanbanBoard({ projectId }: { projectId: string }) {
   const { data: columnsData, isError, isLoading } = useGetColumns(projectId);
@@ -46,8 +46,8 @@ function KanbanBoard({ projectId }: { projectId: string }) {
     null
   );
   const [activeTask, setActiveTask] = useState<TaskInterface | null>(null);
-  const [addColumn, setAddColumn] = useState(false);
   const [tasks, setTasks] = useState<TaskInterface[]>([]);
+  const [addColumn, setAddColumn] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);

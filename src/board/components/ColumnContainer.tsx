@@ -14,7 +14,7 @@ import { useUpdateColumn } from "@/board/hook/useUpdateColumn";
 
 interface ColumnContainerProps {
   column: ColumnInterface;
-  createTask: (id: string) => void;
+  createTask: (id: string) => Promise<void>; 
   tasks: TaskInterface[];
 }
 
