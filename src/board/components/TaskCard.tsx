@@ -6,15 +6,18 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import TrashIcon from "@/icons/TrashIcon";
-import { useDeleteTask } from "../hook/useDeleteTask";
 
 type TaskCardProps = {
   task: TaskInterface;
-  projectId: string;
+  columnId: string;
+  deleteTask: (taskId: string, columnId: string) => void;
 };
 
-export default function TaskCard({ task, projectId }: TaskCardProps) {
-  const mutationDeleteTask = useDeleteTask();
+export default function TaskCard({
+  task,
+  columnId,
+  deleteTask,
+}: TaskCardProps) {
   const [mouseIsOver, setMouseIsOver] = useState(false);
 
   const {
@@ -35,10 +38,6 @@ export default function TaskCard({ task, projectId }: TaskCardProps) {
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
-  };
-
-  const delteTask = () => {
-    mutationDeleteTask.mutate({ taskId: task.id, projectId: projectId });
   };
 
   if (isDragging) {
@@ -70,7 +69,7 @@ export default function TaskCard({ task, projectId }: TaskCardProps) {
         <div className="flex items-center">
           <button
             type="button"
-            onClick={delteTask}
+            onClick={() => deleteTask(task.id, columnId)}
             className="p-2 text-white rounded-md cursor-pointer bg-surface"
           >
             <TrashIcon className="text-action size-4 hover:text-action-hover" />

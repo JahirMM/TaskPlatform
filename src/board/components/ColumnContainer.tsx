@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+import { reorderTasksSafelyService } from "@/board/service/reorderTasksSafelyService";
+
 import { ColumnInterface } from "@/board/interfaces/columnInterface";
 import { TaskInterface } from "@/board/interfaces/taskInterface";
 
@@ -10,17 +12,27 @@ import DeleteColumnButton from "@/board/components/DeleteColumnButton";
 import AddTaskButton from "@/board/components/AddTaskButton";
 import TaskCard from "@/board/components/TaskCard";
 
+import { useUpdateTaskColumn } from "@/board/hook/useUpdateTask";
 import { useUpdateColumn } from "@/board/hook/useUpdateColumn";
+import { useDeleteTask } from "@/board/hook/useDeleteTask";
 
 interface ColumnContainerProps {
   column: ColumnInterface;
-  createTask: (id: string) => Promise<void>; 
+  createTask: (id: string) => Promise<void>;
   tasks: TaskInterface[];
-  projectId: string
+  projectId: string;
 }
 
-function ColumnContainer({ column, createTask, tasks, projectId }: ColumnContainerProps) {
+function ColumnContainer({
+  column,
+  createTask,
+  tasks,
+  projectId,
+}: ColumnContainerProps) {
   const mutationUpdateColumn = useUpdateColumn();
+  const mutationUpdateTasks = useUpdateTaskColumn();
+
+  const mutationDeleteTask = useDeleteTask();
 
   const [inputValue, setInputValue] = useState(column.name);
   const [editMode, setEditMode] = useState(false);
@@ -53,6 +65,20 @@ function ColumnContainer({ column, createTask, tasks, projectId }: ColumnContain
       columnId: columnId,
       updates: { name: name },
     });
+  };
+
+  const deleteTask = async (taskId: string, columnId: string) => {
+    await mutationDeleteTask.mutateAsync({
+      taskId: taskId,
+      projectId: projectId,
+    });
+
+    const updatedTasks = tasks.filter(
+      (t) => t.id !== taskId && t.column_id === columnId
+    );
+    const orderedIds = updatedTasks.map((t) => t.id);
+
+    reorderTasksSafelyService(orderedIds, columnId);
   };
 
   const handleBlurOrEnter = () => {
@@ -110,7 +136,12 @@ function ColumnContainer({ column, createTask, tasks, projectId }: ColumnContain
       <div className="flex flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto grow">
         <SortableContext items={tasksIds}>
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} projectId={projectId}/>
+            <TaskCard
+              key={task.id}
+              task={task}
+              columnId={column.id}
+              deleteTask={deleteTask}
+            />
           ))}
         </SortableContext>
       </div>
