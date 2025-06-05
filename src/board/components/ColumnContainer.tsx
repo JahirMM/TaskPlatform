@@ -12,7 +12,6 @@ import DeleteColumnButton from "@/board/components/DeleteColumnButton";
 import AddTaskButton from "@/board/components/AddTaskButton";
 import TaskCard from "@/board/components/TaskCard";
 
-import { useUpdateTaskColumn } from "@/board/hook/useUpdateTask";
 import { useUpdateColumn } from "@/board/hook/useUpdateColumn";
 import { useDeleteTask } from "@/board/hook/useDeleteTask";
 
@@ -30,7 +29,6 @@ function ColumnContainer({
   projectId,
 }: ColumnContainerProps) {
   const mutationUpdateColumn = useUpdateColumn();
-  const mutationUpdateTasks = useUpdateTaskColumn();
 
   const mutationDeleteTask = useDeleteTask();
 

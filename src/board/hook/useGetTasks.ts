@@ -6,5 +6,6 @@ export const useGetTasksByProjectId = (projectId: string) => {
     queryKey: ["getTasksByProjectId", projectId],
     queryFn: async () => await getTasksByProjectIdService(projectId),
     staleTime: 1000 * 60 * 5,
+    placeholderData: (prevData) => prevData,
   });
 };
