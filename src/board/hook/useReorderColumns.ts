@@ -10,7 +10,7 @@ export const useReorderColumns = () => {
       const orderedIds = newColumns.map((col) => col.id);
       await reorderColumnsSafelyService(orderedIds);
       await queryClient.invalidateQueries({ queryKey: ["getColumns"] });
-    } catch (error) {
+    } catch {
       toast.error("Error al reordenar columnas");
     }
   };

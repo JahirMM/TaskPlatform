@@ -1,4 +1,3 @@
-// src/utils/supabase/server.ts
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
@@ -7,15 +6,14 @@ export const createServerSupabaseClient = async () => {
 
   const cookieAdapter = {
     get: (name: string) => cookieStore.get(name),
-    // Devuelve todas las cookies.
     getAll: () => cookieStore.getAll(),
-    set: (name: string, value: string, options?: { [key: string]: any }) =>
+    set: (name: string, value: string, options?: Record<string, unknown>) =>
       cookieStore.set(name, value, options),
     setAll: (
       cookiesArray: Array<{
         name: string;
         value: string;
-        options?: { [key: string]: any };
+        options?: Record<string, unknown>;
       }>
     ) => {
       cookiesArray.forEach((cookie) => {

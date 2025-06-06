@@ -1,6 +1,7 @@
-import ColumnContainer from "@/board/components/ColumnContainer";
 import { ColumnInterface } from "@/board/interfaces/columnInterface";
 import { TaskInterface } from "@/board/interfaces/taskInterface";
+
+import ColumnContainer from "@/board/components/ColumnContainer";
 
 interface KanbanOverlayProps {
   activeColumn: ColumnInterface | null;
@@ -8,6 +9,7 @@ interface KanbanOverlayProps {
   tasks: TaskInterface[];
   projectId: string;
   createTask: (id: string, title: string) => Promise<void>;
+  onTaskUpdated: (updatedTask: TaskInterface) => void;
 }
 
 export default function KanbanOverlay({
@@ -16,6 +18,7 @@ export default function KanbanOverlay({
   tasks,
   projectId,
   createTask,
+  onTaskUpdated,
 }: KanbanOverlayProps) {
   if (activeColumn)
     return (
@@ -24,6 +27,7 @@ export default function KanbanOverlay({
         tasks={tasks.filter((t) => t.column_id === activeColumn.id)}
         createTask={createTask}
         projectId={projectId}
+        onTaskUpdated={onTaskUpdated}
       />
     );
 

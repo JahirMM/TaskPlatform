@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -20,6 +20,7 @@ interface ColumnContainerProps {
   createTask: (id: string, title: string) => Promise<void>;
   tasks: TaskInterface[];
   projectId: string;
+  onTaskUpdated: (updatedTask: TaskInterface) => void;
 }
 
 function ColumnContainer({
@@ -27,6 +28,7 @@ function ColumnContainer({
   createTask,
   tasks,
   projectId,
+  onTaskUpdated,
 }: ColumnContainerProps) {
   const mutationUpdateColumn = useUpdateColumn();
 
@@ -65,19 +67,17 @@ function ColumnContainer({
     });
   };
 
-  const deleteTask = async (taskId: string, columnId: string) => {
-    await mutationDeleteTask.mutateAsync({
-      taskId: taskId,
-      projectId: projectId,
-    });
-
-    const updatedTasks = tasks.filter(
-      (t) => t.id !== taskId && t.column_id === columnId
-    );
-    const orderedIds = updatedTasks.map((t) => t.id);
-
-    reorderTasksSafelyService(orderedIds, columnId);
-  };
+  const deleteTask = useCallback(
+    async (taskId: string, columnId: string) => {
+      await mutationDeleteTask.mutateAsync({ taskId, projectId });
+      const updatedTasks = tasks.filter(
+        (t) => t.id !== taskId && t.column_id === columnId
+      );
+      const orderedIds = updatedTasks.map((t) => t.id);
+      reorderTasksSafelyService(orderedIds, columnId);
+    },
+    [mutationDeleteTask, projectId, tasks]
+  );
 
   const handleBlurOrEnter = () => {
     if (inputValue !== column.name) {
@@ -111,9 +111,7 @@ function ColumnContainer({
         className="bg-bg-primary flex items-center justify-between text-md h-[60px] cursor-grab rounded-lg rounded-b-none p-3 font-bold border-bg-column border-4"
       >
         {!editMode && (
-          <h2 className="text-sm text-white line-clamp-1">
-            {column.name} -- {column.position}
-          </h2>
+          <h2 className="text-sm text-white line-clamp-1">{column.name}</h2>
         )}
         {editMode && (
           <input
@@ -139,6 +137,7 @@ function ColumnContainer({
               task={task}
               columnId={column.id}
               deleteTask={deleteTask}
+              onTaskUpdated={onTaskUpdated}
             />
           ))}
         </SortableContext>
@@ -148,4 +147,4 @@ function ColumnContainer({
   );
 }
 
-export default ColumnContainer;
+export default memo(ColumnContainer);

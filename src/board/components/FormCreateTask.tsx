@@ -1,38 +1,35 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface FormCreateTaskProps {
   createTask: (id: string, title: string) => Promise<void>;
   columnId: string;
-  setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>
+  setShowCreateTaskForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function FormCreateTask({ createTask, columnId, setShowCreateTaskForm }: FormCreateTaskProps) {
-  const [title, setTitle] = useState("");
+function FormCreateTask({
+  createTask,
+  columnId,
+  setShowCreateTaskForm,
+}: FormCreateTaskProps) {
+  const titleRef = useRef<HTMLInputElement>(null);
   const [isLoadingCreateTask, setIsLoadingCreateTask] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    if (newValue.length <= 100) {
-      setTitle(newValue);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const trimmedTitle = title.trim();
+    const trimmedTitle = titleRef.current?.value.trim() ?? "";
 
     if (isLoadingCreateTask || trimmedTitle.length === 0) return;
 
     setIsLoadingCreateTask(true);
     try {
       await createTask(columnId, trimmedTitle);
-      setTitle("");
+      if (titleRef.current) titleRef.current.value = "";
     } catch (error) {
       console.error("Error al crear tarea:", error);
     } finally {
       setIsLoadingCreateTask(false);
-      setShowCreateTaskForm(false)
+      setShowCreateTaskForm(false);
     }
   };
 
@@ -50,8 +47,7 @@ function FormCreateTask({ createTask, columnId, setShowCreateTaskForm }: FormCre
         id="taskTitle"
         name="title"
         type="text"
-        value={title}
-        onChange={handleChange}
+        ref={titleRef}
         autoComplete="off"
         placeholder="Introduce un título"
         maxLength={100}
@@ -59,10 +55,6 @@ function FormCreateTask({ createTask, columnId, setShowCreateTaskForm }: FormCre
         aria-label="Título de la tarea"
         aria-describedby="taskTitleDescription"
       />
-
-      <p className="mt-2 text-xs text-right text-white/50">
-        {title.length}/100 caracteres
-      </p>
 
       <button
         type="submit"

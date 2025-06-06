@@ -48,20 +48,14 @@ function KanbanBoard({ projectId }: { projectId: string }) {
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 3,
-      },
+      activationConstraint: { distance: 3 },
     })
   );
 
   const createTask = useCallback(
     async (columnId: string, title: string) => {
-      const maxPosition = Math.max(
-        ...tasks
-          .filter((ta) => ta.column_id === columnId)
-          .map((t) => t.position),
-        0
-      );
+      const columnTasks = tasks.filter((t) => t.column_id === columnId);
+      const maxPosition = Math.max(...columnTasks.map((t) => t.position), 0);
 
       if (!userData) return;
 
@@ -76,10 +70,25 @@ function KanbanBoard({ projectId }: { projectId: string }) {
         request
       );
 
-      setTasks([...tasks, newTask[0]]);
+      setTasks((prev) => [...prev, newTask[0]]);
     },
-    [tasks, mutationCreateTask, setTasks]
+    [tasks, mutationCreateTask, setTasks, userData]
   );
+
+  const columnTasksMap = useMemo(() => {
+    const map: Record<string, TaskInterface[]> = {};
+    for (const task of tasks) {
+      if (!map[task.column_id]) map[task.column_id] = [];
+      map[task.column_id].push(task);
+    }
+    return map;
+  }, [tasks]);
+
+  const handleTaskUpdated = useCallback((updatedTask: TaskInterface) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
+  }, []);
 
   if (!projectId) {
     return <div>Proyecto no encontrado</div>;
@@ -109,8 +118,9 @@ function KanbanBoard({ projectId }: { projectId: string }) {
                   key={column.id}
                   column={column}
                   createTask={createTask}
-                  tasks={tasks.filter((t) => t.column_id === column.id)}
+                  tasks={columnTasksMap[column.id] || []}
                   projectId={projectId}
+                  onTaskUpdated={handleTaskUpdated}
                 />
               ))}
             </SortableContext>
@@ -143,6 +153,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
                 projectId={projectId}
                 tasks={tasks}
                 createTask={createTask}
+                onTaskUpdated={handleTaskUpdated}
               />
             </DragOverlay>,
             document.body

@@ -50,7 +50,7 @@ function FilterProjects({
               type="button"
               key={type}
               onClick={() => {
-                setFilterType(type as any);
+                setFilterType(type as "all" | "owned" | "invited");
                 setShowFilter(false);
               }}
               className={`px-3 py-2 text-sm rounded-md text-left cursor-pointer ${
@@ -74,7 +74,7 @@ function FilterProjects({
           <button
             type="button"
             key={type}
-            onClick={() => setFilterType(type as any)}
+            onClick={() => setFilterType(type as "all" | "owned" | "invited")}
             className={`px-3 py-2 text-sm rounded-md ${
               filterType === type
                 ? "bg-action text-white"
