@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import TaskDetailsForm from "@/board/components/TaskDetailsForm";
 import Modal from "@/common/components/Modal";
@@ -46,6 +46,10 @@ export default function TaskCard({
     transform: CSS.Transform.toString(transform),
   };
 
+  const handleCloseModal = useCallback(() => {
+    setShowProductDetailsForm(false);
+  }, []);
+
   if (isDragging) {
     return (
       <div
@@ -86,18 +90,8 @@ export default function TaskCard({
         )}
       </div>
       {showProductDetailsForm && (
-        <Modal
-          title=""
-          onClose={() =>
-            setShowProductDetailsForm(
-              (showProductDetailsForm) => !showProductDetailsForm
-            )
-          }
-        >
-          <TaskDetailsForm
-            taskId={task.id}
-            onTaskUpdated={onTaskUpdated}
-          />
+        <Modal title="" onClose={handleCloseModal}>
+          <TaskDetailsForm taskId={task.id} onTaskUpdated={onTaskUpdated} />
         </Modal>
       )}
     </>

@@ -11,13 +11,20 @@ export const useUpdateTaskDetails = () => {
       columnId,
       title,
       description,
+      priority,
     }: {
       taskId: string;
       columnId: string;
       title?: string;
       description?: string;
+      priority?: "high" | "medium" | "low";
     }) =>
-      updateTasknService(taskId, { column_id: columnId, title, description }),
+      updateTasknService(taskId, {
+        column_id: columnId,
+        title,
+        description,
+        priority,
+      }),
 
     onSuccess: (updatedTask, variables) => {
       queryClient.invalidateQueries({

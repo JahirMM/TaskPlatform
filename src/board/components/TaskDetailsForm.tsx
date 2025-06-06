@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useRef } from "react";
+import { ChangeEvent, useState, useRef, useEffect, memo } from "react";
 
 import TaskDetailsFormSkeleton from "@/board/skeletons/TaskDetailsFormSkeleton";
 
@@ -14,11 +14,19 @@ interface TaskDetailsFormProps {
   onTaskUpdated: (updatedTask: TaskInterface) => void;
 }
 
+const priorityMap = {
+  Alto: "high",
+  Medio: "medium",
+  Baja: "low",
+} as const;
+
 function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
   const mutationUpdateTask = useUpdateTaskDetails();
   const { data: task, isLoading, isError } = useGetTask(taskId);
 
-  const [priority, setPriority] = useState("");
+  const [priority, setPriority] = useState<"Alto" | "Medio" | "Baja" | null>(
+    null
+  );
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
@@ -35,30 +43,89 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
   const updateTask = async (select: "DESCRIPTION" | "TITLE") => {
     if (!task || task.length === 0) return;
 
-    if (titleRef.current?.value && select === "TITLE") {
-      const t = await mutationUpdateTask.mutateAsync({
+    try {
+      const commonInformation = {
         taskId: task[0].id,
         columnId: task[0].column_id,
-        title: titleRef.current.value,
-      });
+      };
 
-      if (t) {
-        onTaskUpdated(t[0]);
+      let updateData;
+
+      if (select === "TITLE" && titleRef.current?.value) {
+        updateData = { title: titleRef.current.value };
+      } else if (select === "DESCRIPTION" && descriptionRef.current?.value) {
+        updateData = { description: descriptionRef.current.value };
+      } else {
+        return;
       }
-    }
 
-    if (descriptionRef.current?.value && select === "DESCRIPTION") {
-      const t = await mutationUpdateTask.mutateAsync({
-        taskId: task[0].id,
-        columnId: task[0].column_id,
-        description: descriptionRef.current.value,
+      const updatedTask = await mutationUpdateTask.mutateAsync({
+        ...commonInformation,
+        ...updateData,
       });
 
-      if (t) {
-        onTaskUpdated(t[0]);
+      if (select === "TITLE") {
+        if (updatedTask) {
+          onTaskUpdated(updatedTask[0]);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+
+  const handlePriorityChange = async (
+    newPriority: "Alto" | "Medio" | "Baja"
+  ) => {
+    setPriority(newPriority);
+
+    if (!task || task.length === 0) return;
+
+    try {
+      const englishPriority = priorityMap[newPriority];
+      const updatedTask = await mutationUpdateTask.mutateAsync({
+        taskId: task[0].id,
+        columnId: task[0].column_id,
+        priority: englishPriority,
+      });
+
+      if (updatedTask) {
+        onTaskUpdated(updatedTask[0]);
+      }
+    } catch {
+      if (task[0].priority) {
+        switch (task[0].priority) {
+          case "high":
+            setPriority("Alto");
+            break;
+          case "medium":
+            setPriority("Medio");
+            break;
+          case "low":
+            setPriority("Baja");
+            break;
+        }
       }
     }
   };
+
+  useEffect(() => {
+    if (task && task.length > 0) {
+      switch (task[0].priority) {
+        case "high":
+          setPriority("Alto");
+          break;
+        case "medium":
+          setPriority("Medio");
+          break;
+        case "low":
+          setPriority("Baja");
+          break;
+        default:
+          setPriority(null);
+      }
+    }
+  }, [task]);
 
   if (isLoading) {
     return <TaskDetailsFormSkeleton />;
@@ -88,22 +155,22 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-300">Prioridad</label>
           <div className="flex gap-2 md:flex-col">
-            {["Alto", "Medio", "Baja"].map((item) => (
+            {(["Alto", "Medio", "Baja"] as const).map((item) => (
               <button
                 key={item}
                 type="button"
-                onClick={() => setPriority(item.toLowerCase())}
+                onClick={() => handlePriorityChange(item)}
                 className={`px-3 py-1 text-sm rounded-lg cursor-pointer transition-all border
-                  ${
-                    priority === item.toLowerCase()
-                      ? item === "Alto"
-                        ? "bg-red-500/10 text-red-400 border-red-400"
-                        : item === "Medio"
-                        ? "bg-yellow-500/10 text-yellow-400 border-yellow-400"
-                        : "bg-green-500/10 text-green-400 border-green-400"
-                      : "text-gray-300 border-gray-500 hover:border-action hover:text-action"
-                  }
-                `}
+          ${
+            priority === item
+              ? item === "Alto"
+                ? "bg-red-500/10 text-red-400 border-red-400"
+                : item === "Medio"
+                ? "bg-yellow-500/10 text-yellow-400 border-yellow-400"
+                : "bg-green-500/10 text-green-400 border-green-400"
+              : "text-gray-300 border-gray-500 hover:border-action hover:text-action"
+          }
+        `}
               >
                 {item}
               </button>
@@ -129,4 +196,4 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
   );
 }
 
-export default TaskDetailsForm;
+export default memo(TaskDetailsForm);
