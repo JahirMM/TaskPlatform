@@ -46,6 +46,18 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
         onTaskUpdated(t[0]);
       }
     }
+
+    if (descriptionRef.current?.value && select === "DESCRIPTION") {
+      const t = await mutationUpdateTask.mutateAsync({
+        taskId: task[0].id,
+        columnId: task[0].column_id,
+        description: descriptionRef.current.value,
+      });
+
+      if (t) {
+        onTaskUpdated(t[0]);
+      }
+    }
   };
 
   if (isLoading) {
@@ -106,6 +118,7 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
         <textarea
           ref={descriptionRef}
           name="description"
+          onBlur={() => updateTask("DESCRIPTION")}
           className="w-full px-3 py-2 text-sm text-left text-white border rounded-lg outline-none resize-none h-52 border-action bg-bg-secondary focus:border-action-hover focus:ring-1 focus:ring-action-hover"
           placeholder="Ingrese una Descripción"
           defaultValue={task[0].description || ""}
