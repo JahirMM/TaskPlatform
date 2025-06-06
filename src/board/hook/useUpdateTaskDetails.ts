@@ -16,7 +16,7 @@ export const useUpdateTaskDetails = () => {
       taskId: string;
       columnId: string;
       title?: string;
-      description?: string;
+      description?: string | null;
       priority?: "high" | "medium" | "low";
     }) =>
       updateTasknService(taskId, {

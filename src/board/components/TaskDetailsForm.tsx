@@ -51,10 +51,17 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
 
       let updateData;
 
-      if (select === "TITLE" && titleRef.current?.value) {
-        updateData = { title: titleRef.current.value };
-      } else if (select === "DESCRIPTION" && descriptionRef.current?.value) {
-        updateData = { description: descriptionRef.current.value };
+      if (select === "TITLE") {
+        if (!titleRef.current || titleRef.current.value.length <= 0) {
+          if (titleRef.current) {
+            titleRef.current.value = task[0].title;
+          }
+          return;
+        } else {
+          updateData = { title: titleRef.current.value };
+        }
+      } else if (select === "DESCRIPTION") {
+        updateData = { description: descriptionRef.current ? descriptionRef.current.value : null };
       } else {
         return;
       }
