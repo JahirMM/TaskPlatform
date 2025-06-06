@@ -1,5 +1,3 @@
-import { useParams } from "next/navigation";
-
 import { CreateColumnRequestInterface } from "@/board/interfaces/createColumnRequestInterface";
 import { ColumnInterface } from "@/board/interfaces/columnInterface";
 

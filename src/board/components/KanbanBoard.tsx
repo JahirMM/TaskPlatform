@@ -55,7 +55,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
   );
 
   const createTask = useCallback(
-    async (columnId: string) => {
+    async (columnId: string, title: string) => {
       const maxPosition = Math.max(
         ...tasks
           .filter((ta) => ta.column_id === columnId)
@@ -68,7 +68,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
       const request: CreateTaskRequestInterface = {
         column_id: columnId,
         user_id: userData.id,
-        title: "tarea P -> " + (maxPosition + 1),
+        title: title,
         position: maxPosition + 1,
       };
 

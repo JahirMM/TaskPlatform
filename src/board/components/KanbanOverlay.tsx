@@ -7,7 +7,7 @@ interface KanbanOverlayProps {
   activeTask: TaskInterface | null;
   tasks: TaskInterface[];
   projectId: string;
-  createTask: (id: string) => Promise<void>;
+  createTask: (id: string, title: string) => Promise<void>;
 }
 
 export default function KanbanOverlay({

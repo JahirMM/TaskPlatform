@@ -17,7 +17,7 @@ import { useDeleteTask } from "@/board/hook/useDeleteTask";
 
 interface ColumnContainerProps {
   column: ColumnInterface;
-  createTask: (id: string) => Promise<void>;
+  createTask: (id: string, title: string) => Promise<void>;
   tasks: TaskInterface[];
   projectId: string;
 }
