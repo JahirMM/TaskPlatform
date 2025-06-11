@@ -1,29 +1,11 @@
-import { CommentWithUserInterface } from "@/board/interfaces/CommentWithUserInterface";
-import { getUserByIdService } from "@/common/services/getGetUserById";
-import { useGetComments } from "@/board/hook/useGetComments";
+import { getCommentsWithUserService } from "@/board/service/getCommentsWithUserService";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetCommentsWithUsers = (taskId: string) => {
-  const { data: comments } = useGetComments(taskId);
-
-  const enrichedQuery = useQuery<CommentWithUserInterface[]>({
+export const useGetCommentsWithUser = (taskId: string) => {
+  return useQuery({
     queryKey: ["getCommentsWithUsers", taskId],
-    queryFn: async (): Promise<CommentWithUserInterface[]> => {
-      if (!comments || comments.length === 0) return [];
-
-      return Promise.all(
-        comments.map(async (comment): Promise<CommentWithUserInterface> => {
-          const user = await getUserByIdService(comment.user_id);
-          return { ...comment, user };
-        })
-      );
-    },
-    enabled: !!comments,
+    queryFn: async () => await getCommentsWithUserService(taskId),
+    placeholderData: (prevData) => prevData,
+    staleTime: 1000 * 60 * 5,
   });
-
-  return {
-    ...enrichedQuery,
-    data: enrichedQuery.data,
-    originalComments: comments,
-  };
 };

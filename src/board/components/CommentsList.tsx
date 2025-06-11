@@ -1,4 +1,4 @@
-import { useGetCommentsWithUsers } from "@/board//hook/useGetCommentsWithUsers";
+import { useGetCommentsWithUser } from "@/board/hook/useGetCommentsWithUsers";
 
 interface CommentsListProps {
   taskId: string;
@@ -9,7 +9,7 @@ export default function CommentsList({ taskId }: CommentsListProps) {
     data: commentsData,
     isLoading,
     isError,
-  } = useGetCommentsWithUsers(taskId);
+  } = useGetCommentsWithUser(taskId);
 
   if (isError || !commentsData) {
     return <div>Error al mostrar los comentarios</div>;
@@ -37,13 +37,13 @@ export default function CommentsList({ taskId }: CommentsListProps) {
               {comment.user.name}
             </p>
           </div>
-          <span className="text-xs text-gray-400">{comment.content}</span>
+          <span className="text-xs text-gray-400">{comment.created_at}</span>
         </div>
         <p className="text-sm text-gray-300">{comment.content}</p>
       </article>
     ))
   ) : (
-    <div className="text-white text-xs text-center">
+    <div className="text-xs text-center text-white">
       No hay comentarios creados
     </div>
   );
