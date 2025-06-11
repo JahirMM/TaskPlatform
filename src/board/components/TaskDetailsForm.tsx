@@ -118,7 +118,7 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
           defaultValue={task[0].description || ""}
         />
       </section>
-      <CommentsSection />
+      <CommentsSection taskId={taskId}/>
     </form>
   );
 }

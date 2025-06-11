@@ -1,22 +1,15 @@
-export function CommentsSection() {
+import CommentsList from "@/board/components/CommentsList";
+
+interface CommentsSectionProps {
+  taskId: string;
+}
+
+export function CommentsSection({ taskId }: CommentsSectionProps) {
   return (
     <section className="mt-8">
       <h3 className="mb-4 text-sm font-medium text-white">Comentarios</h3>
       <div className="space-y-4">
-        {/* Ejemplo de comentario */}
-        <div className="p-4 rounded-lg bg-bg-secondary">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center w-8 h-8 text-sm font-medium text-white rounded-full bg-action">
-                JM
-              </div>
-              <p className="text-sm font-medium text-white">Pedro Cuadrado (EJEMPLO)</p>
-            </div>
-            <span className="text-xs text-gray-400">05/06/2025</span>
-          </div>
-          <p className="text-sm text-gray-300">Texto del comentario (EJEMPLO)</p>
-        </div>
-
+        <CommentsList taskId={taskId} />
         {/* Nuevo comentario */}
         <div className="mt-6">
           <textarea
