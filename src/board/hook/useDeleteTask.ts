@@ -6,7 +6,6 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    // TODO: en el componente se le pasea porjectId pero fn no recive un porjectId entonces porque no pasa un error
     mutationFn: async ({ taskId }: { taskId: string; projectId: string }) =>
       deleteTaskService(taskId),
     onSuccess: (_data, { projectId }) => {
