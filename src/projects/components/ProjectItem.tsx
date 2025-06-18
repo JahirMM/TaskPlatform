@@ -1,11 +1,14 @@
+import { ChangeEvent, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { useCreateRecentlyViewedProject } from "@/projects/hooks/useCreateRecentlyViewedProject";
 import { useDeleteProject } from "@/projects/hooks/useDeleteProject";
+import { useUpdateProject } from "@/projects/hooks/useUpdateProject";
 
 import { formatDate } from "@/common/utils/formatDate";
 
 import TrashIcon from "@/icons/TrashIcon";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface ProjectItemProps {
   id: string;
@@ -25,9 +28,12 @@ function ProjectItem({
   const router = useRouter();
 
   const mutationCreateRecentlyViewedProject = useCreateRecentlyViewedProject();
+  const mutationUpdateProject = useUpdateProject();
   const mutationDeleteProject = useDeleteProject();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const nameRef = useRef<HTMLInputElement>(null);
 
   const handleDelete = async (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -45,13 +51,54 @@ function ProjectItem({
     router.push(`/projects/${id}`);
   };
 
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 70) {
+      e.target.value = e.target.value.slice(0, 70);
+      return;
+    }
+  };
+
+  const updateNameProject = () => {
+    const inputElement = nameRef.current;
+    if (!inputElement) return;
+
+    const trimmedName = inputElement.value.trim();
+
+    if (!trimmedName) {
+      toast.error("El nombre no puede estar vacío");
+      inputElement.value = name;
+      return;
+    }
+
+    if (trimmedName === name) return;
+
+    mutationUpdateProject.mutate({
+      name: trimmedName,
+      projectId: id,
+    });
+  };
+
   return (
     <article
       className="overflow-hidden w-full bg-surface h-44 rounded-xl flex flex-col justify-between p-3 cursor-pointer group hover:bg-surface-hover sm:w-80 xl:max-w-[368px]"
       onClick={handleProjectItem}
     >
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-sm font-bold text-gray-200 line-clamp-2">{name}</h3>
+        {owner_id === user_id ? (
+          <input
+            type="text"
+            ref={nameRef}
+            defaultValue={name}
+            onBlur={updateNameProject}
+            onChange={handleNameChange}
+            onClick={(e) => e.stopPropagation()}
+            className="p-1 text-sm font-bold text-gray-200 border border-transparent rounded-md outline-none resize-none line-clamp-2 focus:border-action hover:border-action"
+          />
+        ) : (
+          <h3 className="text-sm font-bold text-gray-200 line-clamp-2">
+            {name}
+          </h3>
+        )}
 
         {owner_id === user_id &&
           (isLoading ? (
