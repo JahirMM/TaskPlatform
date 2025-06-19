@@ -3,12 +3,14 @@
 import { useState } from "react";
 
 import CreateProjectForm from "@/projects/components/CreateProjectForm";
+import Notifications from "@/common/components/Notifications";
 import { AuthButtons } from "@/auth/components/AuthButtons";
 import useAuthListener from "@/auth/hook/useAuthListener";
 
 import XmarkIcon from "@/icons/XmarkIcon";
 import MenuIcon from "@/icons/MenuIcon";
 import PlusIcon from "@/icons/PlusIcon";
+import BellIcon from "@/icons/BellIcon";
 
 import Modal from "@/common/components/Modal";
 
@@ -20,10 +22,26 @@ function Header() {
 
   const [showMenu, setShowMenu] = useState(false);
   const [showForm, setShowform] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+
   const user = useAuthListener();
 
   const handleCloseForm = () => {
     setShowform((showForm) => !showForm);
+  };
+
+  const handleNotifications = () => {
+    if (showMenu) {
+      setShowMenu(false);
+    }
+    setShowNotifications((showNotifications) => !showNotifications);
+  };
+
+  const handleMenu = () => {
+    if (showMenu) {
+      setShowMenu(false);
+    }
+    setShowform(!showForm);
   };
 
   return (
@@ -33,27 +51,34 @@ function Header() {
           <Link
             href="/"
             className="text-2xl font-bold text-action hover:text-action-hover"
+            onClick={() => showMenu && setShowMenu(false)}
           >
             TaskPlatform
           </Link>
-
           <nav
             className={`
-            absolute backdrop-blur-md transition-transform duration-300 w-full left-0 px-10 py-3 flex flex-col gap-5 
-            sm:block
-            sm:w-auto
-            sm:p-0
-            sm:relative sm:left-auto sm:translate-y-0
-            sm:bg-none sm:backdrop-blur-none
-            ${showMenu ? "translate-y-24" : "-translate-y-full"}
+            absolute bg-bg-secondary/50 backdrop-blur-md transition-transform duration-300 w-full left-0 px-10 py-3 flex flex-col gap-5 
+            md:block
+            md:w-auto
+            md:p-0
+            md:relative md:left-auto md:translate-y-0
+            md:bg-bg-primary md:backdrop-blur-none
+            ${
+              showMenu
+                ? user
+                  ? "translate-y-28"
+                  : "translate-y-14"
+                : "-translate-y-full"
+            }
           `}
             aria-label="Main navigation"
           >
             {user && (
-              <ul className="flex flex-col gap-5 sm:items-center sm:gap-8 sm:flex-row">
+              <ul className="flex flex-col gap-5 md:items-center md:gap-8 md:flex-row">
                 <li>
                   <Link
                     href="/projects"
+                    onClick={() => setShowMenu(false)}
                     className={`text-xs font-semibold hover:text-action-hover md:text-sm ${
                       "/projects" === pathname ? "text-action" : "text-white"
                     }`}
@@ -61,12 +86,18 @@ function Header() {
                     Mis proyectos
                   </Link>
                 </li>
+                <li
+                  className="text-xs font-semibold text-white cursor-pointer hover:text-action-hover md:text-sm md:hidden"
+                  onClick={handleNotifications}
+                >
+                  Notificaciones
+                </li>
                 <li>
                   <button
                     type="button"
                     className="flex items-center justify-center cursor-pointer group"
                     aria-label="Crear tablero"
-                    onClick={() => setShowform(!showForm)}
+                    onClick={handleMenu}
                   >
                     <span className="mr-2 text-xs font-semibold text-white group-hover:text-action md:text-sm">
                       Crear proyecto
@@ -76,28 +107,35 @@ function Header() {
                 </li>
               </ul>
             )}
-
             <div
-              className="sm:hidden"
+              className="md:hidden"
               role="complementary"
               aria-label="Botones de autenticación"
             >
               <AuthButtons />
             </div>
           </nav>
-
           <div
-            className="hidden sm:block"
+            className="hidden md:flex md:gap-3 md:items-center"
             role="complementary"
             aria-label="Botones de autenticación"
           >
+            {user && (
+              <BellIcon
+                className="cursor-pointer text-action size-5"
+                onClick={() =>
+                  setShowNotifications(
+                    (showNotifications) => !showNotifications
+                  )
+                }
+              />
+            )}
             <AuthButtons />
           </div>
-
           <button
             type="button"
             onClick={() => setShowMenu(!showMenu)}
-            className="relative z-50 sm:hidden"
+            className="relative z-40 md:hidden"
             aria-label={showMenu ? "Abrir menú" : "Cerrar menú"}
           >
             {showMenu ? (
@@ -108,6 +146,10 @@ function Header() {
           </button>
         </div>
       </header>
+      <Notifications
+        showNotifications={showNotifications}
+        setShowNotifications={setShowNotifications}
+      />
       {showForm && user && (
         <Modal title="Crear proyecto" onClose={handleCloseForm}>
           <CreateProjectForm setShowForm={setShowform} userId={user.id} />
