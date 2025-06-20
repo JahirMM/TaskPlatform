@@ -103,14 +103,15 @@ function KanbanBoard({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="m-auto flex items-center h-[calc(100vh-64px)] w-full overflow-x-auto overflow-y-hidden px-[40px]">
+    // h-[calc(100vh-64px)]
+    <section className="flex items-center w-full px-10 m-auto overflow-x-auto overflow-y-hidden">
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
       >
-        <div className="flex gap-4 m-auto">
+        <div className="flex gap-4 m-auto mb-5">
           <div className="flex gap-4">
             <SortableContext items={columnsId}>
               {columns.map((column) => (
@@ -139,8 +140,8 @@ function KanbanBoard({ projectId }: { projectId: string }) {
               onClick={() => setAddColumn(true)}
               className="flex gap-2 items-center justify-center h-[40px] w-[200px] min-w-[200px] p-2 cursor-pointer rounded-lg bg-action hover:bg-action-hover"
             >
-              <PlusIcon className="text-black size-4" />
-              <span className="text-sm font-medium">Agregar Columna</span>
+              <PlusIcon className="text-white size-4" />
+              <span className="text-sm font-medium text-white">Agregar Columna</span>
             </button>
           )}
         </div>
@@ -159,7 +160,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
             document.body
           )}
       </DndContext>
-    </div>
+    </section>
   );
 }
 

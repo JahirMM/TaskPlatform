@@ -3,6 +3,7 @@
 import SignInAuthButton from "@/auth/components/SignInAuthButton";
 
 import useAuthListener from "@/auth/hook/useAuthListener";
+import Link from "next/link";
 
 function Hero() {
   const user = useAuthListener();
@@ -21,12 +22,13 @@ function Hero() {
       </p>
       <div className="mt-5">
         {user ? (
-          <button
+          <Link
             type="button"
+            href="/projects"
             className="inline-flex items-center px-5 py-2 mb-2 text-sm font-medium text-center text-white rounded-lg bg-action hover:bg-action-hover focus:ring-4 focus:outline-none focus:ring-action-hover me-2"
           >
             Mis tableros
-          </button>
+          </Link>
         ) : (
           <SignInAuthButton />
         )}

@@ -115,11 +115,7 @@ function Header() {
               <AuthButtons />
             </div>
           </nav>
-          <div
-            className="hidden md:flex md:gap-3 md:items-center"
-            role="complementary"
-            aria-label="Botones de autenticación"
-          >
+          <div className="hidden md:flex md:gap-3 md:items-center">
             {user && (
               <BellIcon
                 className="cursor-pointer text-action size-5"
@@ -130,7 +126,13 @@ function Header() {
                 }
               />
             )}
-            <AuthButtons />
+            <div
+              className="hidden md:block"
+              role="complementary"
+              aria-label="Botones de autenticación"
+            >
+              <AuthButtons />
+            </div>
           </div>
           <button
             type="button"
