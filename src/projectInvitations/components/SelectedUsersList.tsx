@@ -5,12 +5,14 @@ interface SelectedUsersListProps {
   selectedUsers: UserInterface[];
   onRemoveUser: (userId: string) => void;
   onInviteUsers: () => void;
+  isLoading: boolean;
 }
 
 function SelectedUsersList({
   selectedUsers,
   onRemoveUser,
   onInviteUsers,
+  isLoading,
 }: SelectedUsersListProps) {
   return (
     <div className="mt-8">
@@ -21,6 +23,7 @@ function SelectedUsersList({
           onClick={onInviteUsers}
           className="px-5 py-2 text-sm font-medium text-white rounded-lg cursor-pointer bg-action hover:bg-action-hover"
           aria-label="Enviar invitaciones"
+          disabled={isLoading}
         >
           Invitar ({selectedUsers.length})
         </button>
