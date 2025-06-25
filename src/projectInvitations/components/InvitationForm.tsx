@@ -17,7 +17,7 @@ function InvitationForm({ setShowForm, projectId }: InvitationFormProps) {
   const inviteUsers = useCallback(() => {
     if (selectedUsers.length === 0) return;
     console.log(selectedUsers);
-    setSelectedUsers([])
+    setSelectedUsers([]);
     setShowForm(false);
   }, [selectedUsers, setShowForm]);
 
@@ -39,7 +39,7 @@ function InvitationForm({ setShowForm, projectId }: InvitationFormProps) {
 
   return (
     <section>
-      <UserSearchInput onAddUser={addSelectedUser} projectId={projectId}/>
+      <UserSearchInput onAddUser={addSelectedUser} projectId={projectId} />
       {selectedUsers.length > 0 && (
         <SelectedUsersList
           onInviteUsers={inviteUsers}
@@ -47,7 +47,7 @@ function InvitationForm({ setShowForm, projectId }: InvitationFormProps) {
           selectedUsers={selectedUsers}
         />
       )}
-      <ProjectMembersList />
+      <ProjectMembersList projectId={projectId} />
     </section>
   );
 }
