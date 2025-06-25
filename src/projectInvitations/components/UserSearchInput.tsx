@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 
 interface UserSearchInputProps {
   onAddUser: (user: UserInterface) => void;
+  projectId: string;
 }
 
-function UserSearchInput({ onAddUser }: UserSearchInputProps) {
+function UserSearchInput({ onAddUser, projectId }: UserSearchInputProps) {
   const textRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -27,7 +28,7 @@ function UserSearchInput({ onAddUser }: UserSearchInputProps) {
     timeoutRef.current = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const users = await getUsersService(currentTextRef.value);
+        const users = await getUsersService(currentTextRef.value, projectId);
         setUserList(users);
       } catch {
         setUserList([]);

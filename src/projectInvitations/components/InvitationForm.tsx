@@ -8,9 +8,10 @@ import { useCallback, useState } from "react";
 
 interface InvitationFormProps {
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  projectId: string;
 }
 
-function InvitationForm({ setShowForm }: InvitationFormProps) {
+function InvitationForm({ setShowForm, projectId }: InvitationFormProps) {
   const [selectedUsers, setSelectedUsers] = useState<UserInterface[]>([]);
 
   const inviteUsers = useCallback(() => {
@@ -38,7 +39,7 @@ function InvitationForm({ setShowForm }: InvitationFormProps) {
 
   return (
     <section>
-      <UserSearchInput onAddUser={addSelectedUser} />
+      <UserSearchInput onAddUser={addSelectedUser} projectId={projectId}/>
       {selectedUsers.length > 0 && (
         <SelectedUsersList
           onInviteUsers={inviteUsers}

@@ -29,7 +29,7 @@ function KanbanHeader({ project }: KanbanHeaderProps) {
       </section>
       {showForm && (
         <Modal title="Compartir proyecto" onClose={() => setShowForm((showForm) => !showForm)}>
-          <InvitationForm setShowForm={setShowForm}/>
+          <InvitationForm setShowForm={setShowForm} projectId={project.id}/>
         </Modal>
       )}
     </>
