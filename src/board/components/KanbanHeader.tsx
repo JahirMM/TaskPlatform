@@ -1,6 +1,6 @@
 import { ProjectInterface } from "@/projects/interfaces/projectInterface";
 
-import InvitationForm from "@/board/components/InvitationForm";
+import InvitationForm from "@/projectInvitations/components/InvitationForm";
 import Modal from "@/common/components/Modal";
 
 import { useState } from "react";
@@ -21,7 +21,7 @@ function KanbanHeader({ project }: KanbanHeaderProps) {
           <button
             type="button"
             onClick={() => setShowForm((showForm) => !showForm)}
-            className="text-sm text-white bg-action/90 hover:bg-action-hover focus:ring-4 focus:ring-action font-medium rounded-lg px-5 py-2.5 me-2 mb-2 focus:outline-none"
+            className="text-sm cursor-pointer text-white bg-action/90 hover:bg-action-hover focus:ring-4 focus:ring-action font-medium rounded-lg px-5 py-2.5 me-2 mb-2 focus:outline-none"
           >
             Compartir
           </button>
