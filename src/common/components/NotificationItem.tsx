@@ -1,15 +1,21 @@
 import { InvitationInterface } from "@/projectInvitations/interfaces/invitationInterface";
 
+import { useDeclineInvitation } from "@/projectInvitations/hooks/useDeclineInvitacionById";
 import { useGetUserById } from "@/common/hooks/useGetUserById";
 import { useGetProject } from "@/projects/hooks/useGetProject";
 
 import { formatDate } from "@/common/utils/formatDate";
+import { useState } from "react";
 
 interface NotificationItemProps {
   invitation: InvitationInterface;
+  userId: string;
 }
 
-function NotificationItem({ invitation }: NotificationItemProps) {
+function NotificationItem({ invitation, userId }: NotificationItemProps) {
+  const [isAccepting, setIsAccepting] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
+
   const {
     data: projectData,
     isLoading: projectLoading,
@@ -21,6 +27,8 @@ function NotificationItem({ invitation }: NotificationItemProps) {
     isLoading: userLoading,
     isError: userIsError,
   } = useGetUserById(invitation.sender_user_id);
+
+  const mutationDeclineInvitation = useDeclineInvitation();
 
   if (projectLoading || userLoading) {
     return (
@@ -37,6 +45,21 @@ function NotificationItem({ invitation }: NotificationItemProps) {
       </li>
     );
   }
+
+  const declineInvitation = async () => {
+    try {
+      setIsRejecting(true);
+      await mutationDeclineInvitation.mutateAsync({
+        invitationId: invitation.id,
+        userId,
+      });
+    } catch {
+      setIsRejecting(false);
+      return;
+    } finally {
+      setIsRejecting(false);
+    }
+  };
 
   return (
     <li className="px-4 py-3 transition-colors hover:bg-white/5">
@@ -67,8 +90,10 @@ function NotificationItem({ invitation }: NotificationItemProps) {
         <button
           type="button"
           className="px-2 py-1 text-xs text-red-400 transition border border-red-500 rounded-md cursor-pointer hover:bg-red-500/10"
+          onClick={declineInvitation}
+          disabled={isRejecting}
         >
-          Rechazar
+          {isRejecting ? "Cargando..." : "Rechazar"}
         </button>
       </div>
     </li>

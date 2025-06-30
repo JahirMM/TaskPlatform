@@ -46,7 +46,11 @@ function Notifications({
       ) : data && data.length > 0 ? (
         <ul className="divide-y divide-white/10">
           {data.map((invitation) => (
-            <NotificationItem key={invitation.id} invitation={invitation} />
+            <NotificationItem
+              key={invitation.id}
+              invitation={invitation}
+              userId={userId}
+            />
           ))}
         </ul>
       ) : (
