@@ -1,6 +1,7 @@
 import { InvitationInterface } from "@/projectInvitations/interfaces/invitationInterface";
 
 import { useDeclineInvitation } from "@/projectInvitations/hooks/useDeclineInvitacionById";
+import { useAddProjectMember } from "@/projectInvitations/hooks/useAddProjectMember";
 import { useGetUserById } from "@/common/hooks/useGetUserById";
 import { useGetProject } from "@/projects/hooks/useGetProject";
 
@@ -29,6 +30,7 @@ function NotificationItem({ invitation, userId }: NotificationItemProps) {
   } = useGetUserById(invitation.sender_user_id);
 
   const mutationDeclineInvitation = useDeclineInvitation();
+  const mutationAddProjectMember = useAddProjectMember();
 
   if (projectLoading || userLoading) {
     return (
@@ -45,6 +47,26 @@ function NotificationItem({ invitation, userId }: NotificationItemProps) {
       </li>
     );
   }
+
+  const acceptInvitation = async () => {
+    try {
+      setIsAccepting(true);
+      const invitationId = invitation.id;
+
+      await mutationDeclineInvitation.mutateAsync({
+        invitationId,
+        userId,
+      });
+      await mutationAddProjectMember.mutateAsync({
+        project_id: invitationId,
+        user_id: userId,
+      });
+    } catch {
+      setIsAccepting(false);
+    } finally {
+      setIsAccepting(false);
+    }
+  };
 
   const declineInvitation = async () => {
     try {
@@ -84,8 +106,10 @@ function NotificationItem({ invitation, userId }: NotificationItemProps) {
         <button
           type="button"
           className="px-2 py-1 text-xs text-white transition border rounded-md cursor-pointer border-action hover:bg-action/30"
+          onClick={acceptInvitation}
+          disabled={isAccepting}
         >
-          Aceptar
+          {isAccepting ? "Cargando..." : "Aceptar"}
         </button>
         <button
           type="button"
