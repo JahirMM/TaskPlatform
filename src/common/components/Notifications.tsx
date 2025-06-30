@@ -1,15 +1,30 @@
+import { useGetInvitationsByUserId } from "@/projectInvitations/hooks/useGetInvitationsByUserId";
 import NotificationItem from "@/common/components/NotificationItem";
 import XmarkIcon from "@/icons/XmarkIcon";
 
 interface NotificationsProps {
   showNotifications: boolean;
   setShowNotifications: React.Dispatch<React.SetStateAction<boolean>>;
+  userId: string;
 }
 
 function Notifications({
   showNotifications,
   setShowNotifications,
+  userId,
 }: NotificationsProps) {
+  const { data, isLoading, isError } = useGetInvitationsByUserId(userId);
+
+  if (isError) {
+    <div
+      className={`fixed z-50 top-0 right-0 overflow-y-auto shadow-action/30 shadow-xs w-[316px] h-[496px] bg-bg-secondary rounded-l-xl transition-transform duration-700 translate-y-3 ${
+        showNotifications ? "translate-x-0" : "translate-x-full"
+      }`}
+    >
+      Error al tener la lista de notificaciones
+    </div>;
+  }
+
   return (
     <div
       className={`fixed z-50 top-0 right-0 overflow-y-auto shadow-action/30 shadow-xs w-[316px] h-[496px] bg-bg-secondary rounded-l-xl transition-transform duration-700 translate-y-3 ${
@@ -26,9 +41,17 @@ function Notifications({
         />
       </div>
 
-      <ul className="divide-y divide-white/10">
-        <NotificationItem />
-      </ul>
+      {isLoading ? (
+        <div>Cargando...</div>
+      ) : data && data.length > 0 ? (
+        <ul className="divide-y divide-white/10">
+          {data.map((invitation) => (
+            <NotificationItem key={invitation.id} invitation={invitation} />
+          ))}
+        </ul>
+      ) : (
+        <div>Información no encontrada</div>
+      )}
     </div>
   );
 }

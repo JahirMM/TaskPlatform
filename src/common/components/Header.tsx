@@ -148,10 +148,13 @@ function Header() {
           </button>
         </div>
       </header>
-      <Notifications
-        showNotifications={showNotifications}
-        setShowNotifications={setShowNotifications}
-      />
+      {user && (
+        <Notifications
+          showNotifications={showNotifications}
+          setShowNotifications={setShowNotifications}
+          userId={user.id}
+        />
+      )}
       {showForm && user && (
         <Modal title="Crear proyecto" onClose={handleCloseForm}>
           <CreateProjectForm setShowForm={setShowform} userId={user.id} />
