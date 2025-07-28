@@ -88,7 +88,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
     setTasks((prevTasks) =>
       prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
-  }, []);
+  }, [setTasks]);
 
   if (!projectId) {
     return <div>Proyecto no encontrado</div>;
