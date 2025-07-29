@@ -4,14 +4,15 @@ import { MouseEvent } from "react";
 
 interface DeleteColumnButtonProps {
   columnId: string;
+  projectId: string;
 }
 
-function DeleteColumnButton({ columnId }: DeleteColumnButtonProps) {
+function DeleteColumnButton({ columnId, projectId }: DeleteColumnButtonProps) {
   const mutationDeleteColumn = useDeleteColumn();
 
   const deleteColumn = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    mutationDeleteColumn.mutate(columnId);
+    mutationDeleteColumn.mutate({ columnId, projectId });
   };
 
   return (

@@ -2,13 +2,19 @@ import { deleteColumnService } from "@/board/service/deleteColumnService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+type DeleteColumnParams = {
+  columnId: string;
+  projectId: string;
+}
+
 export const useDeleteColumn = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (columnId: string) => deleteColumnService(columnId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getColumns"] });
+    mutationFn: async ({columnId}: DeleteColumnParams) => {return deleteColumnService(columnId)},
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["getColumns", variables.projectId] });
+
     },
     onError: (error) => {
       toast.error(

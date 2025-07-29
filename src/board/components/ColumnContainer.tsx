@@ -127,7 +127,7 @@ function ColumnContainer({
             className="px-2 text-sm text-white bg-black border rounded outline-none focus:border-rose-500"
           />
         )}
-        <DeleteColumnButton columnId={column.id} />
+        <DeleteColumnButton columnId={column.id} projectId={projectId}/>
       </header>
       <div className="flex flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto grow">
         <SortableContext items={tasksIds}>
