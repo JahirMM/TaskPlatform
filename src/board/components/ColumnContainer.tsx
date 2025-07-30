@@ -69,7 +69,8 @@ function ColumnContainer({
   };
 
   const deleteTask = useCallback(
-    async (taskId: string, columnId: string) => {
+    async (taskId: string, columnId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
       await mutationDeleteTask.mutateAsync({ taskId, projectId });
       const updatedTasks = tasks.filter(
         (t) => t.id !== taskId && t.column_id === columnId

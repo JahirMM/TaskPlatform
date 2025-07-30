@@ -13,7 +13,7 @@ import TrashIcon from "@/icons/TrashIcon";
 type TaskCardProps = {
   task: TaskInterface;
   columnId: string;
-  deleteTask: (taskId: string, columnId: string) => void;
+  deleteTask: (taskId: string, columnId: string, e: React.MouseEvent<HTMLButtonElement>) => void;
   onTaskUpdated: (updatedTask: TaskInterface) => void;
 };
 
@@ -81,7 +81,7 @@ export default function TaskCard({
           <div className="flex items-center">
             <button
               type="button"
-              onClick={() => deleteTask(task.id, columnId)}
+              onClick={(e) => deleteTask(task.id, columnId, e)}
               className="p-2 text-white rounded-md cursor-pointer bg-surface"
             >
               <TrashIcon className="text-action size-4 hover:text-action-hover" />
