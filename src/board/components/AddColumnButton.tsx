@@ -35,9 +35,10 @@ function AddColumnButton({
       project_id: projectId,
     };
 
-    const data: ColumnInterface[] = await mutationCreateColumn.mutateAsync(
-      request
-    );
+    const data: ColumnInterface[] = await mutationCreateColumn.mutateAsync({
+      request: request,
+      projectId: projectId,
+    });
     setColumns([...columns, data[0]]);
 
     if (inputRef.current) {
