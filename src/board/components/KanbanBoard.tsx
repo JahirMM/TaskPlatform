@@ -66,9 +66,10 @@ function KanbanBoard({ projectId }: { projectId: string }) {
         position: maxPosition + 1,
       };
 
-      const newTask: TaskInterface[] = await mutationCreateTask.mutateAsync(
-        request
-      );
+      const newTask: TaskInterface[] = await mutationCreateTask.mutateAsync({
+        projectId,
+        request,
+      });
 
       setTasks((prev) => [...prev, newTask[0]]);
     },
@@ -84,11 +85,16 @@ function KanbanBoard({ projectId }: { projectId: string }) {
     return map;
   }, [tasks]);
 
-  const handleTaskUpdated = useCallback((updatedTask: TaskInterface) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
-  }, [setTasks]);
+  const handleTaskUpdated = useCallback(
+    (updatedTask: TaskInterface) => {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task
+        )
+      );
+    },
+    [setTasks]
+  );
 
   if (!projectId) {
     return <div>Proyecto no encontrado</div>;
@@ -141,7 +147,9 @@ function KanbanBoard({ projectId }: { projectId: string }) {
               className="flex gap-2 items-center justify-center h-[40px] w-[200px] min-w-[200px] p-2 cursor-pointer rounded-lg bg-action hover:bg-action-hover"
             >
               <PlusIcon className="text-white size-4" />
-              <span className="text-sm font-medium text-white">Agregar Columna</span>
+              <span className="text-sm font-medium text-white">
+                Agregar Columna
+              </span>
             </button>
           )}
         </div>
