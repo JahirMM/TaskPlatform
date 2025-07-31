@@ -58,7 +58,7 @@ function NotificationItem({ invitation, userId }: NotificationItemProps) {
         userId,
       });
       await mutationAddProjectMember.mutateAsync({
-        project_id: invitationId,
+        project_id: invitation.project_id,
         user_id: userId,
       });
     } catch {
