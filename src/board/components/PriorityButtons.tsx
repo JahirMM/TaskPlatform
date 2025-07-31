@@ -1,13 +1,25 @@
-import { useState } from "react";
-
 import { useUpdateTaskDetails } from "@/board/hook/useUpdateTaskDetails";
 import { TaskInterface } from "@/board/interfaces/taskInterface";
+import { useEffect, useState } from "react";
 
 const priorityMap = {
   Alto: "high",
   Medio: "medium",
   Baja: "low",
 } as const;
+
+const selectedPriority = (priority: string | null) => {
+  switch (priority) {
+    case "high":
+      return "Alto";
+    case "medium":
+      return "Medio";
+    case "low":
+      return "Baja";
+    default:
+      return null;
+  }
+};
 
 interface PriorityButtonsProps {
   task: TaskInterface;
@@ -18,18 +30,7 @@ function PriorityButtons({ task, onTaskUpdated }: PriorityButtonsProps) {
   const mutationUpdateTask = useUpdateTaskDetails();
 
   const [priority, setPriority] = useState<"Alto" | "Medio" | "Baja" | null>(
-    () => {
-      switch (task.priority) {
-        case "high":
-          return "Alto";
-        case "medium":
-          return "Medio";
-        case "low":
-          return "Baja";
-        default:
-          return null;
-      }
-    }
+    selectedPriority(task.priority)
   );
 
   const handlePriorityChange = async (
@@ -52,22 +53,23 @@ function PriorityButtons({ task, onTaskUpdated }: PriorityButtonsProps) {
       }
     } catch {
       if (task.priority) {
-        switch (task.priority) {
-          case "high":
-            setPriority("Alto");
-            break;
-          case "medium":
-            setPriority("Medio");
-            break;
-          case "low":
-            setPriority("Baja");
-            break;
-        }
+        selectedPriority(task.priority);
       }
     }
   };
+
+  useEffect(() => {
+    if (task.priority) {
+      setPriority(selectedPriority(task.priority));
+    }
+  }, [task.priority]);
+
   return (
-    <div className="flex flex-col gap-2" role="group" aria-label="Seleccionar prioridad">
+    <div
+      className="flex flex-col gap-2"
+      role="group"
+      aria-label="Seleccionar prioridad"
+    >
       <label className="text-sm font-medium text-gray-300">Prioridad</label>
       <div className="flex gap-2 md:flex-col">
         {(["Alto", "Medio", "Baja"] as const).map((item) => (

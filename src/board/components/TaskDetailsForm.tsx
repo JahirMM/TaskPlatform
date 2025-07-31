@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, memo } from "react";
+import { ChangeEvent, memo, useState, useEffect } from "react";
 
 import TaskDetailsFormSkeleton from "@/board/skeletons/TaskDetailsFormSkeleton";
 
@@ -19,12 +19,12 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
   const mutationUpdateTask = useUpdateTaskDetails();
   const { data: task, isLoading, isError } = useGetTask(taskId);
 
-  const titleRef = useRef<HTMLTextAreaElement>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length > 100) {
-      e.target.value = e.target.value.slice(0, 100);
+    if (title.length <= 100) {
+      setTitle(e.target.value);
       return;
     }
 
@@ -32,51 +32,54 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
     e.target.style.height = e.target.scrollHeight + "px";
   };
 
+  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    if (description.length <= 700) {
+      setDescription(e.target.value);
+      return;
+    }
+  };
+
   const updateTask = async (select: "DESCRIPTION" | "TITLE") => {
     if (!task || task.length === 0) return;
 
-    try {
-      const commonInformation = {
-        taskId: task[0].id,
-        columnId: task[0].column_id,
+    const commonInformation = {
+      taskId: task[0].id,
+      columnId: task[0].column_id,
+    };
+
+    let updateData;
+
+    if (select === "TITLE") {
+      if (title.trim().length === 0) return;
+      updateData = { title };
+    } else if (select === "DESCRIPTION") {
+      updateData = {
+        description: description.trim() === "" ? null : description,
       };
+    } else {
+      return;
+    }
 
-      let updateData;
-
-      if (select === "TITLE") {
-        if (!titleRef.current || titleRef.current.value.length <= 0) {
-          if (titleRef.current) {
-            titleRef.current.value = task[0].title;
-          }
-          return;
-        } else {
-          updateData = { title: titleRef.current.value };
-        }
-      } else if (select === "DESCRIPTION") {
-        updateData = {
-          description:
-            descriptionRef.current?.value.trim() === ""
-              ? null
-              : descriptionRef.current?.value,
-        };
-      } else {
-        return;
-      }
-
+    try {
       const updatedTask = await mutationUpdateTask.mutateAsync({
         ...commonInformation,
         ...updateData,
       });
 
-      if (select === "TITLE") {
-        if (updatedTask) {
-          onTaskUpdated(updatedTask[0]);
-        }
+      if (updatedTask) {
+        onTaskUpdated(updatedTask[0]);
       }
     } catch (error) {
       console.error("Error updating task:", error);
     }
   };
+
+  useEffect(() => {
+    if (task && task.length > 0) {
+      setTitle(task[0].title);
+      setDescription(task[0].description ?? "");
+    }
+  }, [task]);
 
   if (isLoading) {
     return <TaskDetailsFormSkeleton />;
@@ -95,11 +98,10 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
       <section className="flex flex-col items-start gap-7 md:flex-row">
         <textarea
           onBlur={() => updateTask("TITLE")}
-          ref={titleRef}
           className="w-full min-h-[44px] px-3 py-2 overflow-hidden text-lg text-left text-white border rounded-lg outline-none resize-none border-bg-primary bg-bg-primary focus:border-action focus:ring-1 focus:ring-action"
           placeholder="Ingrese un titulo"
-          defaultValue={task[0].title}
-          onChange={handleTitleChange}
+          value={title}
+          onChange={(e) => handleTitleChange(e)}
           rows={1}
         />
 
@@ -110,15 +112,15 @@ function TaskDetailsForm({ taskId, onTaskUpdated }: TaskDetailsFormProps) {
           Descripción
         </label>
         <textarea
-          ref={descriptionRef}
           name="description"
           onBlur={() => updateTask("DESCRIPTION")}
+          onChange={(e) => handleDescriptionChange(e)}
           className="w-full px-3 py-2 text-sm text-left text-white border rounded-lg outline-none resize-none h-52 border-action bg-bg-secondary focus:border-action-hover focus:ring-1 focus:ring-action-hover"
           placeholder="Ingrese una Descripción"
-          defaultValue={task[0].description || ""}
+          value={description}
         />
       </section>
-      <CommentsSection taskId={taskId}/>
+      <CommentsSection taskId={taskId} />
     </form>
   );
 }
