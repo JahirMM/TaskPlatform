@@ -29,7 +29,6 @@ export const useUpdateTaskDetails = () => {
     onSuccess: (updatedTask, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["getTask", variables.taskId],
-        exact: true,
       });
       return updatedTask;
     },
