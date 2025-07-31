@@ -16,7 +16,7 @@ export const useAddProjectMember = () => {
     }) => addProjectMemberService({ project_id, user_id }),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["getProjectMembers", variables.project_id],
+        queryKey: ["getProjects", variables.user_id],
       });
       toast.success("Te has unido al proyecto con éxito");
     },
