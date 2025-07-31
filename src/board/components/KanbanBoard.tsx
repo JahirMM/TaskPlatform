@@ -73,7 +73,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
 
       setTasks((prev) => [...prev, newTask[0]]);
     },
-    [tasks, mutationCreateTask, setTasks, userData]
+    [tasks, mutationCreateTask, setTasks, userData, projectId]
   );
 
   const columnTasksMap = useMemo(() => {
@@ -109,7 +109,6 @@ function KanbanBoard({ projectId }: { projectId: string }) {
   }
 
   return (
-    // h-[calc(100vh-64px)]
     <section className="flex items-center w-full px-10 m-auto overflow-x-auto overflow-y-hidden">
       <DndContext
         sensors={sensors}
