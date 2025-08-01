@@ -12,7 +12,7 @@ function OpenCreateProjectModalButton({
       aria-label="Crear un proyecto nuevo"
       onClick={() => setShowForm(true)}
     >
-      <span className="text-sm font-bold text-gray-200">Crear un proyecto</span>
+      <span className="text-lg font-bold text-gray-200">Crear un proyecto</span>
     </button>
   );
 }

@@ -12,7 +12,9 @@ function ProjectList({ user_id }: { user_id: string }) {
   const { data: projects, isError, isLoading } = useGetProjects(user_id);
   const [showForm, setShowform] = useState(false);
 
-  const [filterType, setFilterType] = useState<"all" | "owned" | "invited">("all");
+  const [filterType, setFilterType] = useState<"all" | "owned" | "invited">(
+    "all"
+  );
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleCloseForm = () => {
@@ -58,7 +60,7 @@ function ProjectList({ user_id }: { user_id: string }) {
         ) : isLoading ? (
           <p className="text-white">Cargando...</p>
         ) : filteredProjects && filteredProjects.length === 0 ? (
-          <p className="text-white">No se encontraron proyectos</p>
+          <OpenCreateProjectModalButton setShowForm={handleCloseForm} />
         ) : (
           <div className="grid grid-cols-1 gap-8 place-items-center md:grid-cols-2 xl:grid-cols-3">
             <OpenCreateProjectModalButton setShowForm={handleCloseForm} />
