@@ -10,6 +10,8 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 
+import KanbanBoardSkeleton from "@/board/skeletons/KanbanBoardSkeleton";
+
 import ColumnContainer from "@/board/components/ColumnContainer";
 import AddColumnButton from "@/board/components/AddColumnButton";
 import KanbanOverlay from "@/board/components/KanbanOverlay";
@@ -105,7 +107,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
   }
 
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return <KanbanBoardSkeleton />;
   }
 
   return (
