@@ -25,21 +25,31 @@ function Page() {
     }
   }, [isError, isLoading, project, router]);
 
-  if (isError || !project) return <div>Redirigiendo...</div>;
+  if (isError) {
+    return <div>Redirigiendo...</div>;
+  }
 
-  return projectId ? (
+  if (!isLoading && !project) {
+    return <div>Redirigiendo...</div>;
+  }
+
+  if (!projectId) {
+    return <div>ProjectId no encontrado</div>;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-action"></div>
+      </div>
+    );
+  }
+
+  return (
     <>
-      {isLoading ? (
-        <div>Cargando...</div>
-      ) : (
-        <>
-          <KanbanHeader project={project} />
-          <KanbanBoard projectId={projectId} />
-        </>
-      )}
+      <KanbanHeader project={project!} />
+      <KanbanBoard projectId={projectId} />
     </>
-  ) : (
-    <div>ProjectId no encontrado</div>
   );
 }
 
