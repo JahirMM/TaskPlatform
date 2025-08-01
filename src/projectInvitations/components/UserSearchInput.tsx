@@ -87,7 +87,7 @@ function UserSearchInput({ onAddUser, projectId }: UserSearchInputProps) {
         />
         {isLoading ? (
           <div className="fixed text-white text-sm flex items-center z-[1000] mt-1 p-3 h-16 w-[calc(95%-3rem)] overflow-y-auto bg-bg-secondary rounded-lg shadow-lg border border-gray-700 sm:w-[calc(50%-3rem)]">
-            Cargando...
+            <div className="w-8 h-8 border-4 border-gray-300 rounded-full animate-spin border-t-action"></div>
           </div>
         ) : (
           userList.length > 0 && (
