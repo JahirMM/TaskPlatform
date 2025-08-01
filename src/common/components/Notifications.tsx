@@ -1,4 +1,5 @@
 import { useGetInvitationsByUserId } from "@/projectInvitations/hooks/useGetInvitationsByUserId";
+import NotificationsSkeleton from "@/common/skeletons/NotificationsSkeleton";
 import NotificationItem from "@/common/components/NotificationItem";
 import XmarkIcon from "@/icons/XmarkIcon";
 
@@ -42,7 +43,7 @@ function Notifications({
       </div>
 
       {isLoading ? (
-        <div>Cargando...</div>
+        <NotificationsSkeleton/>
       ) : data && data.length > 0 ? (
         <ul className="divide-y divide-white/10">
           {data.map((invitation) => (
@@ -54,7 +55,7 @@ function Notifications({
           ))}
         </ul>
       ) : (
-        <div>Información no encontrada</div>
+        <div className="pt-3 text-center text-white">Sin notificaciones</div>
       )}
     </div>
   );
