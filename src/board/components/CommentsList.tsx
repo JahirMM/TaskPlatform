@@ -1,5 +1,6 @@
 import { useGetCommentsWithUser } from "@/board/hook/useGetCommentsWithUsers";
 
+import CommentsListSkeleton from "@/board/skeletons/CommentsListSkeleton";
 import { useDeleteComment } from "@/board/hook/useDeleteComments";
 import { useGetUser } from "@/common/hooks/useGetUser";
 
@@ -29,7 +30,7 @@ export default function CommentsList({ taskId }: CommentsListProps) {
   };
 
   return isLoading ? (
-    <div>Cargando...</div>
+    <CommentsListSkeleton />
   ) : commentsData && commentsData.length > 0 ? (
     commentsData.map((comment) => (
       <article
