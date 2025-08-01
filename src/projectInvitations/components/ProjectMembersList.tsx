@@ -10,7 +10,7 @@ function ProjectMembersList({ projectId }: ProjectMembersListProps) {
   if (isError) {
     return (
       <div className="mt-8" aria-live="polite">
-        <p className="text-red-500 text-sm">
+        <p className="text-sm text-red-500">
           Error al obtener los usuarios del proyecto.
         </p>
       </div>
@@ -18,8 +18,8 @@ function ProjectMembersList({ projectId }: ProjectMembersListProps) {
   }
   if (isLoading) {
     return (
-      <div className="mt-8" aria-busy="true" aria-live="polite">
-        <p className="text-white">Cargando...</p>
+      <div className="flex justify-center mt-8" aria-busy="true" aria-live="polite">
+        <div className="w-10 h-10 border-4 border-gray-300 rounded-full animate-spin border-t-action"></div>
       </div>
     );
   }
@@ -60,7 +60,7 @@ function ProjectMembersList({ projectId }: ProjectMembersListProps) {
                 {user.name}{" "}
                 {data.ownerId === user.id && (
                   <span
-                    className="text-white text-sm"
+                    className="text-sm text-white"
                     aria-label="Administrador del proyecto"
                   >
                     (Administrador)
