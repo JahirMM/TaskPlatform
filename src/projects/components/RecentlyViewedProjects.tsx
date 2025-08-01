@@ -1,3 +1,4 @@
+import RecentlyViewedProjectsSkeleton from "@/projects/skeletons/RecentlyViewedProjectsSkeleton";
 import { useGetRecentlyViewedProjects } from "@/projects/hooks/useGetRecentlyViewedProjects";
 import ProjectItem from "@/projects/components/ProjectItem";
 import ClockIcon from "@/icons/ClockIcon";
@@ -10,7 +11,7 @@ function RecentlyViewedProjects({ user_id }: { user_id: string }) {
   } = useGetRecentlyViewedProjects(user_id);
 
   if (!projects || projects.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -28,7 +29,7 @@ function RecentlyViewedProjects({ user_id }: { user_id: string }) {
         {isError ? (
           <p className="text-red-500">Error al obtener los proyectos</p>
         ) : isLoading ? (
-          <div>cargando..</div>
+          <RecentlyViewedProjectsSkeleton />
         ) : (
           projects.map(({ id, project_id, project }) => (
             <ProjectItem
