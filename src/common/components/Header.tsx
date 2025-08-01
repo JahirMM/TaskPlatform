@@ -57,7 +57,7 @@ function Header() {
           </Link>
           <nav
             className={`
-            absolute bg-bg-secondary/50 backdrop-blur-md transition-transform duration-300 w-full left-0 px-10 py-3 flex flex-col gap-5 
+            absolute z-50 bg-bg-secondary/50 backdrop-blur-md transition-transform duration-300 w-full left-0 px-10 py-3 flex flex-col gap-5 
             md:block
             md:w-auto
             md:p-0

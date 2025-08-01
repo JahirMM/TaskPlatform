@@ -20,7 +20,7 @@ function FilterProjects({
   const [showFilter, setShowFilter] = useState(false);
 
   return (
-    <div className="relative flex flex-col w-full gap-2 lg:flex-row lg:items-center lg:gap-4 lg:w-auto">
+    <div className="relative z-20 flex flex-col w-full gap-2 lg:flex-row lg:items-center lg:gap-4 lg:w-auto">
       <div className="flex items-center w-full gap-2 lg:w-auto lg:justify-end">
         <input
           placeholder="Buscar proyecto"
