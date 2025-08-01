@@ -4,6 +4,8 @@ import FilterProjects from "@/projects/components/FilterProjects";
 import ProjectItem from "@/projects/components/ProjectItem";
 import Modal from "@/common/components/Modal";
 
+import ProjectListSkeleton from "@/projects/skeletons/ProjectListSkeleton";
+
 import { useGetProjects } from "@/projects/hooks/useGetProjects";
 
 import { useState } from "react";
@@ -58,7 +60,7 @@ function ProjectList({ user_id }: { user_id: string }) {
         {isError ? (
           <p className="text-red-500">Error al obtener los proyectos</p>
         ) : isLoading ? (
-          <p className="text-white">Cargando...</p>
+          <ProjectListSkeleton />
         ) : filteredProjects && filteredProjects.length === 0 ? (
           <OpenCreateProjectModalButton setShowForm={handleCloseForm} />
         ) : (
