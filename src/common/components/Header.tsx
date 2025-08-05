@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useInviteNotifications } from "@/common/hooks/useInviteNotifications ";
 import CreateProjectForm from "@/projects/components/CreateProjectForm";
 import Notifications from "@/common/components/Notifications";
 import { AuthButtons } from "@/auth/components/AuthButtons";
@@ -25,6 +26,8 @@ function Header() {
   const [showNotifications, setShowNotifications] = useState(false);
 
   const user = useAuthListener();
+
+  useInviteNotifications(user?.id);
 
   const handleCloseForm = () => {
     setShowform((showForm) => !showForm);

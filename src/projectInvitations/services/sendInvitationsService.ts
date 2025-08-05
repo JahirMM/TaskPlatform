@@ -28,6 +28,16 @@ export const sendInvitationsService = async (
         const nameToShow =
           user.name && user.name !== "No Name" ? user.name : user.user_name;
         toast.error(`Error al enviar la invitación a ${nameToShow}`);
+      } else {
+        await supabase.channel(`notifications:${user.id}`).send({
+          type: "broadcast",
+          event: "new-invite",
+          payload: {
+            senderId: senderUserId,
+            projectId,
+            recipientId: user.id,
+          },
+        });
       }
     }
   }
