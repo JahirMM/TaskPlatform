@@ -1,9 +1,11 @@
 import { sendInvitationsService } from "@/projectInvitations/services/sendInvitationsService";
 import { UserInterface } from "@/common/interfaces/userInterface";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useSendInvitations = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({
       users,
@@ -14,5 +16,10 @@ export const useSendInvitations = () => {
       senderUserId: string;
       projectId: string;
     }) => sendInvitationsService(users, senderUserId, projectId),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["getProjectMembers", variables.projectId],
+      });
+    },
   });
 };
