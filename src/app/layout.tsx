@@ -1,10 +1,10 @@
 import TanstackProvider from "@/providers/TanstackProvider";
+import { AuthProvider } from "@/auth/context/AuthContext";
 import Header from "@/common/components/Header";
 import { Poppins } from "next/font/google";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { AuthProvider } from "@/auth/context/AuthContext";
 
 const poppins = Poppins({
   variable: "--font-poppins",

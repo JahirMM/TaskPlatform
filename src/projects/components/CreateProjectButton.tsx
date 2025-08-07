@@ -1,3 +1,5 @@
+'use client'
+
 import { useCreateProject } from "@/projects/hooks/useCreateProject";
 import { redirect } from "next/navigation";
 import { useState } from "react";

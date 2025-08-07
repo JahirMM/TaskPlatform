@@ -10,10 +10,20 @@ import { CSS } from "@dnd-kit/utilities";
 
 import TrashIcon from "@/icons/TrashIcon";
 
+const priorityMap: Record<string, string> = {
+  high: "Alto",
+  medium: "Medio",
+  low: "Baja",
+};
+
 type TaskCardProps = {
   task: TaskInterface;
   columnId: string;
-  deleteTask: (taskId: string, columnId: string, e: React.MouseEvent<HTMLButtonElement>) => void;
+  deleteTask: (
+    taskId: string,
+    columnId: string,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => void;
   onTaskUpdated: (updatedTask: TaskInterface) => void;
 };
 
@@ -76,7 +86,22 @@ export default function TaskCard({
         onClick={() => setShowProductDetailsForm(!showProductDetailsForm)}
         className="flex gap-2 text-white bg-bg-primary p-2.5 h-[100px] min-h-[100px] rounded-xl cursor-grab hover:ring-2 hover:ring-inset hover:ring-gray-700 hover:bg-bg-secondary"
       >
-        <div className="flex-1 text-xs line-clamp-3">{task.title}</div>
+        <div className="flex flex-col items-start justify-between flex-1 gap-2 line-clamp-3">
+          <p className="text-xs line-clamp-2">{task.title}</p>
+          {task.priority && (
+            <span
+              className={`px-1.5 py-1 text-xs rounded-lg border ${
+                task.priority === "high"
+                  ? "bg-red-500/10 text-red-400 border-red-400"
+                  : task.priority === "medium"
+                  ? "bg-yellow-500/10 text-yellow-400 border-yellow-400"
+                  : "bg-green-500/10 text-green-400 border-green-400"
+              }`}
+            >
+              {priorityMap[task.priority]}
+            </span>
+          )}
+        </div>
         {mouseIsOver && (
           <div className="flex items-center">
             <button

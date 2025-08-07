@@ -1,3 +1,5 @@
+"use client";
+
 import CreateProjectButton from "@/projects/components/CreateProjectButton";
 import { usePathname } from "next/navigation";
 import { useState } from "react";

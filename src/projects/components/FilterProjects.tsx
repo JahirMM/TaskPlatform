@@ -1,3 +1,5 @@
+"use client";
+
 import FilterIcon from "@/icons/FilterIcon";
 import XmarkIcon from "@/icons/XmarkIcon";
 import { useState } from "react";
