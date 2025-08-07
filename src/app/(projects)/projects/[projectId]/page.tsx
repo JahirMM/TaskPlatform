@@ -17,8 +17,7 @@ function Page() {
 
   useEffect(() => {
     if (isError) {
-      // TODO: poner la ruta de error
-      router.push("/");
+      router.push("/error");
     } else if (!isLoading && !project) {
       router.push("/not_found");
     }
