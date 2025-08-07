@@ -20,8 +20,7 @@ function Page() {
       // TODO: poner la ruta de error
       router.push("/");
     } else if (!isLoading && !project) {
-      // TODO: Poner la ruta 404
-      router.push("/");
+      router.push("/not_found");
     }
   }, [isError, isLoading, project, router]);
 
@@ -40,7 +39,7 @@ function Page() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-40">
-        <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-action"></div>
+        <div className="w-10 h-10 border-4 border-gray-300 rounded-full animate-spin border-t-action"></div>
       </div>
     );
   }
