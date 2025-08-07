@@ -18,8 +18,12 @@ function ProjectMembersList({ projectId }: ProjectMembersListProps) {
   }
   if (isLoading) {
     return (
-      <div className="flex justify-center mt-8" aria-busy="true" aria-live="polite">
-        <div className="w-10 h-10 border-4 border-gray-300 rounded-full animate-spin border-t-action"></div>
+      <div
+        className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] bg-gradient-to-br from-dark-blue to-dark-purple p-4"
+        aria-busy="true"
+        aria-live="polite"
+      >
+        <div className="w-20 h-20 mx-auto mb-6 border-4 border-gray-300 rounded-full animate-spin border-t-action"></div>
       </div>
     );
   }

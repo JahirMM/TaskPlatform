@@ -1,12 +1,12 @@
 "use client";
 
 import SignInAuthButton from "@/auth/components/SignInAuthButton";
+import { useAuth } from "@/auth/context/AuthContext";
 
-import useAuthListener from "@/auth/hook/useAuthListener";
 import Link from "next/link";
 
 function Hero() {
-  const user = useAuthListener();
+  const { user } = useAuth();
 
   return (
     <section className="h-[calc(100vh-65px)] flex flex-col justify-center items-center px-10 mx-auto lg:container lg:px-32 xl:px-40">

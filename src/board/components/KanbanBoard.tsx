@@ -21,7 +21,7 @@ import { TaskInterface } from "@/board/interfaces/taskInterface";
 
 import { useKanbanBoard } from "@/board/hook/useKanbanBoard";
 import { useCreateTask } from "@/board/hook/useCreateTask";
-import { useGetUser } from "@/common/hooks/useGetUser";
+import { useAuth } from "@/auth/context/AuthContext";
 
 import PlusIcon from "@/icons/PlusIcon";
 
@@ -41,8 +41,8 @@ function KanbanBoard({ projectId }: { projectId: string }) {
     onDragEnd,
   } = useKanbanBoard(projectId);
 
-  const { data: userData } = useGetUser();
   const mutationCreateTask = useCreateTask();
+  const {user} = useAuth()
 
   const [addColumn, setAddColumn] = useState(false);
 
@@ -59,11 +59,11 @@ function KanbanBoard({ projectId }: { projectId: string }) {
       const columnTasks = tasks.filter((t) => t.column_id === columnId);
       const maxPosition = Math.max(...columnTasks.map((t) => t.position), 0);
 
-      if (!userData) return;
+      if (!user) return;
 
       const request: CreateTaskRequestInterface = {
         column_id: columnId,
-        user_id: userData.id,
+        user_id: user.id,
         title: title,
         position: maxPosition + 1,
       };
@@ -75,7 +75,7 @@ function KanbanBoard({ projectId }: { projectId: string }) {
 
       setTasks((prev) => [...prev, newTask[0]]);
     },
-    [tasks, mutationCreateTask, setTasks, userData, projectId]
+    [tasks, mutationCreateTask, setTasks, user, projectId]
   );
 
   const columnTasksMap = useMemo(() => {

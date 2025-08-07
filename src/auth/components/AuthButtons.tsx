@@ -3,9 +3,9 @@
 import SignInAuthButton from "@/auth/components/SignInAuthButton";
 import SignOutButton from "@/auth/components/SignOutButton";
 
-import useAuthListener from "../hook/useAuthListener";
+import { useAuth } from "@/auth/context/AuthContext";
 
 export function AuthButtons() {
-  const user = useAuthListener();
+    const { user } = useAuth();
   return <div>{user ? <SignOutButton /> : <SignInAuthButton />}</div>;
 }

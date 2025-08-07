@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 
-import { useInviteNotifications } from "@/common/hooks/useInviteNotifications ";
 import CreateProjectForm from "@/projects/components/CreateProjectForm";
 import Notifications from "@/common/components/Notifications";
+
+import { useInviteNotifications } from "@/common/hooks/useInviteNotifications ";
 import { AuthButtons } from "@/auth/components/AuthButtons";
-import useAuthListener from "@/auth/hook/useAuthListener";
+import { useAuth } from "@/auth/context/AuthContext";
 
 import XmarkIcon from "@/icons/XmarkIcon";
 import MenuIcon from "@/icons/MenuIcon";
@@ -25,7 +26,7 @@ function Header() {
   const [showForm, setShowform] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const user = useAuthListener();
+  const { user } = useAuth();
 
   useInviteNotifications(user?.id);
 
