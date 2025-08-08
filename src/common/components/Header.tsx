@@ -26,9 +26,20 @@ function Header() {
   const [showForm, setShowform] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   useInviteNotifications(user?.id);
+
+  if (loading) {
+    return (
+      <div
+        className="flex items-center gap-20 p-3 min-h-16"
+      >
+        <div className="w-full h-8 bg-bg-secondary rounded-3xl animate-pulse"></div>
+        <div className="w-full h-8 bg-bg-secondary rounded-3xl animate-pulse"></div>
+      </div>
+    );
+  }
 
   const handleCloseForm = () => {
     setShowform((showForm) => !showForm);

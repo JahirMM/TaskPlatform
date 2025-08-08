@@ -1,6 +1,7 @@
 import { ProjectInterface } from "@/projects/interfaces/projectInterface";
 
 import InvitationForm from "@/projectInvitations/components/InvitationForm";
+import ConnectedMembers from "@/board/components/ConnectedMembers";
 import Modal from "@/common/components/Modal";
 
 import { useState } from "react";
@@ -17,7 +18,8 @@ function KanbanHeader({ project }: KanbanHeaderProps) {
       <section className="flex flex-col justify-between gap-4 px-10 my-10 sm:flex-row">
         <h2 className="text-xl font-semibold text-white">{project.name}</h2>
 
-        <div className="">
+        <div className="flex items-center justify-around gap-10">
+          <ConnectedMembers projectId={project.id}/>
           <button
             type="button"
             onClick={() => setShowForm((showForm) => !showForm)}
