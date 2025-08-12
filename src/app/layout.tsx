@@ -33,11 +33,11 @@ export const metadata: Metadata = {
     title: "TaskPlatform | Gestión de Proyectos Colaborativa en Tiempo Real",
     description:
       "Organiza y gestiona tus proyectos en equipo con TaskPlatform. Tableros, columnas, tareas y colaboración en tiempo real con notificaciones instantáneas.",
-    url: "",
+    url: "https://taskplatform-six.vercel.app/",
     siteName: "TaskPlatform",
     images: [
       {
-        url: "/TaskPlatform.png",
+        url: "https://taskplatform-six.vercel.app/TaskPlatform.png",
         width: 1200,
         height: 630,
         alt: "TaskPlatform - Plataforma de Gestión de Proyectos",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title: "TaskPlatform | Gestión de Proyectos Colaborativa en Tiempo Real",
     description:
       "Organiza y gestiona proyectos con tu equipo en tiempo real usando TaskPlatform.",
-    images: ["/TaskPlatform.png"],
+    images: ["https://taskplatform-six.vercel.app/TaskPlatform.png"],
   },
   icons: {
     icon: "/icoBoard.ico",
